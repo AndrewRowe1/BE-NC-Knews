@@ -8,10 +8,10 @@
     "migrate-make": "knex migrate:make",
     "migrate-latest": "knex migrate:latest",
     "migrate-rollback": "knex migrate:rollback",
-    "test": "mocha ./spec/*.spec.js",
-    "seed": "knex seed:run",
-    "dev": "nodemon listen.js",
-    "start": "node listen.js"
+    "start": "node listen.js",
+    "seed_dev": "NODE_ENV=development knex seed:run",
+    "seed_test": "NODE_ENV=test knex seed:run",
+    "test": "npm run seed_test && mocha ./spec/*.spec.js"
   },
   "author": "",
   "license": "ISC",
