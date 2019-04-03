@@ -45,7 +45,6 @@ describe('/', () => {
             expect(body.articles[0]).to.contain.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count');
             expect(body.articles[3].author).to.equal('rogersop');
             expect(body.articles[3].title).to.equal(`Student SUES Mitch!`);
-            //expect(body.articles[3].title).to.equal(`They\'re not exactly dogs, are they?`);
             expect(body.articles[3].article_id).to.equal(4);
             expect(body.articles[3].topic).to.equal('mitch');
             expect(body.articles[3].votes).to.equal(0);
@@ -164,6 +163,15 @@ describe('/', () => {
               expect(body.articlePatch.votes).to.equal(-10);
             });
         });
+        it('PATCHES articles data with status 404 article_id does not exist, incrementing vote by -10', () => {
+          return request
+            .patch('/api/articles/9999')
+            .send({ inc_votes: -10 })
+            .expect(404)
+            .then((body) => {
+              expect(body.text).to.equal('Article not found');
+            });
+        });
         it('DELETES articles data with status 204 with the requested article_id to delete', () => {
           return request
             .delete('/api/articles/2')
@@ -256,6 +264,15 @@ describe('/', () => {
             expect(body.commentPatch.article_id).to.equal(1);
             expect(body.commentPatch.body).to.equal('The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.');
             expect(body.commentPatch.votes).to.equal(16);
+          });
+      });
+      it('PATCHES comments data with status 404 comment_id does not exist, incrementing vote by -10', () => {
+        return request
+          .patch('/api/comments/9999')
+          .send({ inc_votes: -10 })
+          .expect(404)
+          .then((body) => {
+            expect(body.text).to.equal('Comment not found');
           });
       });
       it('DELETES comments data with status 204 with the requested comment_id to delete', () => {

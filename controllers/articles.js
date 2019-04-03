@@ -19,7 +19,12 @@ const fetchArticle = ((req, res, next) => {
 const amendArticle = ((req, res, next) => {
   patchArticle(req.body, req.params)
     .then(([articlePatch]) => {
-      res.status(200).send({ articlePatch });
+      if (articlePatch === undefined) {
+        next({ status: 404, msg: 'Article not found' })
+      }
+      else {
+        res.status(200).send({ articlePatch });
+      }
     })
     .catch(next);
 });
