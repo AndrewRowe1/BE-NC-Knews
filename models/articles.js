@@ -46,4 +46,9 @@ const patchArticle = (articlePatch, articleId) => {
   return connection('articles').where('article_id', '=', articleIdInt).increment('votes', voteIncrement).returning('*');
 };
 
-module.exports = { getArticles, getArticle, patchArticle };
+const deleteArticle = (articleId) => {
+  const articleIdInt = articleId.article_id;
+  return connection('articles').del().where('article_id', '=', articleIdInt).returning('*');
+};
+
+module.exports = { getArticles, getArticle, patchArticle, deleteArticle };

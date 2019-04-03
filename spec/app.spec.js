@@ -139,19 +139,29 @@ describe('/', () => {
               expect(body.article[0].comment_count).to.equal('0');
             });
         });
-      });
-      it('PATCHES articles data with status 200 with keys of article_id, title, topic, created_at, votes', () => {
-        return request
-          .patch('/api/articles/2')
-          .send({ inc_votes: 1 })
-          .expect(200)
-          .then(({ body }) => {
-            expect(body.articlePatch.article_id).to.equal(2);
-            expect(body.articlePatch.author).to.equal('icellusedkars');
-            expect(body.articlePatch.topic).to.equal('mitch');
-            expect(body.articlePatch.title).to.equal('Sony Vaio; or, The Laptop');
-            expect(body.articlePatch.votes).to.equal(1);
-          });
+
+        it('PATCHES articles data with status 200 incrementing vote by 1', () => {
+          return request
+            .patch('/api/articles/2')
+            .send({ inc_votes: 1 })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articlePatch.article_id).to.equal(2);
+              expect(body.articlePatch.author).to.equal('icellusedkars');
+              expect(body.articlePatch.topic).to.equal('mitch');
+              expect(body.articlePatch.title).to.equal('Sony Vaio; or, The Laptop');
+              expect(body.articlePatch.votes).to.equal(1);
+            });
+        });
+        it('DELETES articles data with status 204 with keys of article_id, title, topic, created_at, votes', () => {
+          return request
+            .delete('/api/articles/2')
+            .expect(204)
+            .then(({ body }) => {
+              expect(body).to.eql({});
+              expect(body.articleDelete).to.equal(undefined);
+            });
+        });
       });
     });
   });
