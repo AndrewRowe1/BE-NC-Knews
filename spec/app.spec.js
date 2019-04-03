@@ -23,7 +23,6 @@ describe('/', () => {
       return request
         .get('/api')
         .expect(200)
-
     });
     describe('/topics', () => {
       it('GET status:200 and returns topics data', () => {
@@ -268,6 +267,20 @@ describe('/', () => {
             expect(body.commentDelete).to.equal(undefined);
           });
       });
+    });
+    describe('/users/:username', () => {
+      it('GETS users data with status 200 for a given username', () => {
+        return request
+          .get('/api/users/rogersop')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.users).to.have.lengthOf(1);
+            expect(body.users[0]).to.contain.keys('username', 'avatar_url', 'name')
+            expect(body.users[0].username).to.equal('rogersop');
+            expect(body.users[0].avatar_url).to.equal('https://avatars2.githubusercontent.com/u/24394918?s=400&v=4');
+            expect(body.users[0].name).to.equal('paul');
+          });
+      })
     });
   });
 });
