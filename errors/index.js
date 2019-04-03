@@ -7,5 +7,14 @@ exports.methodNotAllowed = (req, res) => {
 };
 
 exports.handle500 = (err, req, res, next) => {
-  res.status(500).send({ msg: 'Internal Server Error' });
+  console.log(err);
+  if (err.status) {
+    res.status(err.status).send(err.msg);
+  }
+  if (err.code === '42703') {
+    res.status(400).send({ msg: err.message || 'Bad Request' });
+  }
+  else {
+    res.status(500).send({ msg: 'Internal Server Error' });
+  }
 };

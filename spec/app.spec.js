@@ -10,6 +10,14 @@ describe('/', () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
 
+  describe('non-existant route', () => {
+    it('status:404 for route that does not exist', () => {
+      return request.get('/non-existant route').expect(404).then(({ body }) => {
+        expect(body.msg).to.equal('Route Not Found');
+      });
+    });
+  });
+
   describe('/api', () => {
     it('GET status:200', () => {
       return request
@@ -138,7 +146,11 @@ describe('/', () => {
           .send({ inc_votes: 1 })
           .expect(200)
           .then(({ body }) => {
-            expect(body.articlePatch.votes).to.equal('test');
+            expect(body.articlePatch.article_id).to.equal(2);
+            expect(body.articlePatch.author).to.equal('icellusedkars');
+            expect(body.articlePatch.topic).to.equal('mitch');
+            expect(body.articlePatch.title).to.equal('Sony Vaio; or, The Laptop');
+            expect(body.articlePatch.votes).to.equal(1);
           });
       });
     });

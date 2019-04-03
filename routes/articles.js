@@ -10,6 +10,7 @@ articleRouter
 articleRouter
   .route('/:article_id')
   .get(fetchArticle)
-  .patch(amendArticle);
+  .patch(amendArticle)
+  .all(methodNotAllowed);
 
 module.exports = articleRouter;

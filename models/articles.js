@@ -41,7 +41,9 @@ const getArticle = ({ article_id }) => {
 }
 
 const patchArticle = (articlePatch, articleId) => {
-  return connection('articles').where('article_id', '=', articleId).update(articlePatch).returning('*');
+  const voteIncrement = articlePatch.inc_votes;
+  const articleIdInt = articleId.article_id;
+  return connection('articles').where('article_id', '=', articleIdInt).increment('votes', voteIncrement).returning('*');
 };
 
 module.exports = { getArticles, getArticle, patchArticle };

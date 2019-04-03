@@ -17,11 +17,11 @@ const fetchArticle = ((req, res, next) => {
 });
 
 const amendArticle = ((req, res, next) => {
-  patchArticle(req.body, req.params.article)
+  patchArticle(req.body, req.params)
     .then(([articlePatch]) => {
       res.status(200).send({ articlePatch });
     })
-    .catch(console.log);
+    .catch(next);
 });
 
 module.exports = { fetchArticles, fetchArticle, amendArticle };
