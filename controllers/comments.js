@@ -16,7 +16,12 @@ const amendComment = ((req, res, next) => {
 const removeComment = ((req, res, next) => {
   deleteComment(req.params)
     .then(([commentDelete]) => {
-      res.status(204).send({ commentDelete });
+      if (commentDelete === undefined) {
+        next({ status: 404, msg: 'Comment not found' })
+      }
+      else {
+        res.status(204).send({ commentDelete });
+      }
     })
     .catch(next);
 });

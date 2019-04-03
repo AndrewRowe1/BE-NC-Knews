@@ -181,6 +181,14 @@ describe('/', () => {
               expect(body.articleDelete).to.equal(undefined);
             });
         });
+        it('DELETES articles data with status 404 with an invalid requested article_id to delete', () => {
+          return request
+            .delete('/api/articles/9999')
+            .expect(404)
+            .then((body) => {
+              expect(body.text).to.equal('Article not found');
+            });
+        });
         describe('/comments', () => {
           it('GETS comments data with status 200 for a given article_id', () => {
             return request
@@ -236,6 +244,15 @@ describe('/', () => {
                 expect(body.comments[0].body).to.equal('This is a great read, invest in your time and read this!');
               });
           });
+          it('POSTS comments data with status 404 for an invalid article_id', () => {
+            return request
+              .post('/api/articles/9999/comments')
+              .expect(404)
+              .send({ username: 'icellusedkars', body: 'This is a great read, invest in your time and read this!' })
+              .then(({ body }) => {
+                expect(body.msg).to.equal(`Page not found`)
+              });
+          });
         });
       });
     });
@@ -282,6 +299,14 @@ describe('/', () => {
           .then(({ body }) => {
             expect(body).to.eql({});
             expect(body.commentDelete).to.equal(undefined);
+          });
+      });
+      it('DELETES comments data with status 404 with an invalid requested comment_id to delete', () => {
+        return request
+          .delete('/api/comments/9999')
+          .expect(404)
+          .then((body) => {
+            expect(body.text).to.equal('Comment not found');
           });
       });
     });

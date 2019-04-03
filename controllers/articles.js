@@ -32,7 +32,12 @@ const amendArticle = ((req, res, next) => {
 const removeArticle = ((req, res, next) => {
   deleteArticle(req.params)
     .then(([articleDelete]) => {
-      res.status(204).send({ articleDelete });
+      if (articleDelete === undefined) {
+        next({ status: 404, msg: 'Article not found' })
+      }
+      else {
+        res.status(204).send({ articleDelete });
+      }
     })
     .catch(next);
 });
@@ -48,9 +53,12 @@ const fetchCommentsByArticleId = ((req, res, next) => {
 const sendCommentsByArticleId = ((req, res, next) => {
   postCommentsByArticleId(req.params, req.body)
     .then((comments) => {
+      //if (comments) next({msg: 'fgfdjvghj'})
+      //else 
       res.status(201).send({ comments });
     })
-    .catch(next);
+    .catch(next)
+  //.catch((err)=>next(err));
 });
 
 module.exports = { fetchArticles, fetchArticle, amendArticle, removeArticle, fetchCommentsByArticleId, sendCommentsByArticleId };
