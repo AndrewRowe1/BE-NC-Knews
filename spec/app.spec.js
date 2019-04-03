@@ -35,6 +35,30 @@ describe('/', () => {
             expect(body.topics[0].description).to.equal('The man, the Mitch, the legend');
           });
       });
+      it('PATCH status:405 and returns method not allowed', () => {
+        return request
+          .patch('/api/topics')
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).to.equal('Method Not Allowed');
+          });
+      });
+      it('POST status:405 and returns method not allowed', () => {
+        return request
+          .post('/api/topics')
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).to.equal('Method Not Allowed');
+          });
+      });
+      it('DELETE status:405 and returns method not allowed', () => {
+        return request
+          .delete('/api/topics')
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).to.equal('Method Not Allowed');
+          });
+      });
     });
     describe('/articles', () => {
       it('GET status:200 and returns articles data', () => {
@@ -49,6 +73,30 @@ describe('/', () => {
             expect(body.articles[3].topic).to.equal('mitch');
             expect(body.articles[3].votes).to.equal(0);
             expect(body.articles[3].comment_count).to.equal('0');
+          });
+      });
+      it('PATCH status:405 and returns method not allowed', () => {
+        return request
+          .patch('/api/articles')
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).to.equal('Method Not Allowed');
+          });
+      });
+      it('POST status:405 and returns method not allowed', () => {
+        return request
+          .post('/api/articles')
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).to.equal('Method Not Allowed');
+          });
+      });
+      it('DELETE status:405 and returns method not allowed', () => {
+        return request
+          .delete('/api/articles')
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).to.equal('Method Not Allowed');
           });
       });
       describe('?author', () => {
@@ -189,6 +237,14 @@ describe('/', () => {
               expect(body.text).to.equal('Article not found');
             });
         });
+        it('POST status:405 and returns method not allowed', () => {
+          return request
+            .post('/api/articles/1')
+            .expect(405)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Method Not Allowed');
+            });
+        });
         describe('/comments', () => {
           it('GETS comments data with status 200 for a given article_id', () => {
             return request
@@ -253,6 +309,22 @@ describe('/', () => {
                 expect(body.msg).to.equal(`Page not found`)
               });
           });
+          it('PATCH status:405 and returns method not allowed', () => {
+            return request
+              .patch('/api/articles/1/comments')
+              .expect(405)
+              .then(({ body }) => {
+                expect(body.msg).to.equal('Method Not Allowed');
+              });
+          });
+          it('DELETE status:405 and returns method not allowed', () => {
+            return request
+              .delete('/api/articles/1/comments')
+              .expect(405)
+              .then(({ body }) => {
+                expect(body.msg).to.equal('Method Not Allowed');
+              });
+          });
         });
       });
     });
@@ -309,6 +381,22 @@ describe('/', () => {
             expect(body.text).to.equal('Comment not found');
           });
       });
+      it('GET status:405 and returns method not allowed', () => {
+        return request
+          .get('/api/comments/1')
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).to.equal('Method Not Allowed');
+          });
+      });
+      it('POST status:405 and returns method not allowed', () => {
+        return request
+          .post('/api/comments/1')
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).to.equal('Method Not Allowed');
+          });
+      });
     });
     describe('/users/:username', () => {
       it('GETS users data with status 200 for a given username', () => {
@@ -322,7 +410,31 @@ describe('/', () => {
             expect(body.users[0].avatar_url).to.equal('https://avatars2.githubusercontent.com/u/24394918?s=400&v=4');
             expect(body.users[0].name).to.equal('paul');
           });
-      })
+      });
+      it('POST status:405 and returns method not allowed', () => {
+        return request
+          .post('/api/users/rogersop')
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).to.equal('Method Not Allowed');
+          });
+      });
+      it('PATCH status:405 and returns method not allowed', () => {
+        return request
+          .patch('/api/users/rogersop')
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).to.equal('Method Not Allowed');
+          });
+      });
+      it('DELETE status:405 and returns method not allowed', () => {
+        return request
+          .delete('/api/users/rogersop')
+          .expect(405)
+          .then(({ body }) => {
+            expect(body.msg).to.equal('Method Not Allowed');
+          });
+      });
     });
   });
 });
