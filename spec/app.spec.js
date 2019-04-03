@@ -259,7 +259,15 @@ describe('/', () => {
             expect(body.commentPatch.votes).to.equal(16);
           });
       });
-
+      it('DELETES comments data with status 204 with the requested comment_id to delete', () => {
+        return request
+          .delete('/api/comments/2')
+          .expect(204)
+          .then(({ body }) => {
+            expect(body).to.eql({});
+            expect(body.commentDelete).to.equal(undefined);
+          });
+      });
     });
   });
 });

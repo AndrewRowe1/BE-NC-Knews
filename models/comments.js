@@ -6,4 +6,9 @@ const patchComment = (commentPatch, commentId) => {
   return connection('comments').where('comment_id', '=', commentIdInt).increment('votes', voteIncrement).returning('*');
 };
 
-module.exports = patchComment;
+const deleteComment = (commentId) => {
+  const commentIdInt = commentId.comment_id;
+  return connection('comments').del().where('comment_id', '=', commentIdInt).returning('*');
+};
+
+module.exports = { patchComment, deleteComment };
