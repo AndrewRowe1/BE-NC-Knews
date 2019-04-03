@@ -51,4 +51,19 @@ const deleteArticle = (articleId) => {
   return connection('articles').del().where('article_id', '=', articleIdInt).returning('*');
 };
 
-module.exports = { getArticles, getArticle, patchArticle, deleteArticle };
+const getCommentsByArticleId = (articleId, { sort_by, order }) => {
+  const article_id = parseInt(articleId.article_id);
+  return connection('comments')
+    .select('*')
+    .where('article_id', '=', article_id)
+    .modify((query) => {
+      if (sort_by) {
+        query.orderBy(sort_by || 'created_at', 'desc');
+      };
+      if (order) {
+        query.orderBy('created_at', order || 'desc');
+      }
+    });
+}
+
+module.exports = { getArticles, getArticle, patchArticle, deleteArticle, getCommentsByArticleId };

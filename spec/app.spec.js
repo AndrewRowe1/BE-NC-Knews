@@ -153,7 +153,7 @@ describe('/', () => {
               expect(body.articlePatch.votes).to.equal(1);
             });
         });
-        it('DELETES articles data with status 204 with keys of article_id, title, topic, created_at, votes', () => {
+        it('DELETES articles data with status 204 with the requested article_id to delete', () => {
           return request
             .delete('/api/articles/2')
             .expect(204)
@@ -161,6 +161,48 @@ describe('/', () => {
               expect(body).to.eql({});
               expect(body.articleDelete).to.equal(undefined);
             });
+        });
+        describe('/comments', () => {
+          it('GETS comments data with status 200 for a given article_id', () => {
+            return request
+              .get('/api/articles/5/comments')
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).to.have.lengthOf(2);
+                expect(body.comments[0].author).to.equal('icellusedkars');
+                expect(body.comments[0].article_id).to.equal(5);
+                expect(body.comments[0].comment_id).to.equal(14);
+                expect(body.comments[0].votes).to.equal(16);
+                expect(body.comments[0].body).to.equal('What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.');
+              });
+          })
+          it('GETS comments data with status 200 for a given article_id and sorts by author', () => {
+            return request
+              .get('/api/articles/1/comments?sort_by=body')
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments[0]).to.contain.keys('author', 'article_id', 'comment_id', 'votes', 'created_at', 'body')
+                expect(body.comments).to.have.lengthOf(13);
+                expect(body.comments[0].author).to.equal('butter_bridge');
+                expect(body.comments[0].article_id).to.equal(1);
+                expect(body.comments[0].comment_id).to.equal(18);
+                expect(body.comments[0].votes).to.equal(16);
+                expect(body.comments[0].body).to.equal('This morning, I showered for nine minutes.');
+              });
+          });
+          it('GETS comments data with status 200 for a given article_id and orders ascending', () => {
+            return request
+              .get('/api/articles/5/comments?order=asc')
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).to.have.lengthOf(2);
+                expect(body.comments[0].author).to.equal('butter_bridge');
+                expect(body.comments[0].article_id).to.equal(5);
+                expect(body.comments[0].comment_id).to.equal(15);
+                expect(body.comments[0].votes).to.equal(1);
+                expect(body.comments[0].body).to.equal(`I am 100% sure that we're not completely sure.`);
+              });
+          });
         });
       });
     });
