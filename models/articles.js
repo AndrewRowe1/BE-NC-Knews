@@ -64,6 +64,15 @@ const getCommentsByArticleId = (articleId, { sort_by, order }) => {
         query.orderBy('created_at', order || 'desc');
       }
     });
-}
+};
 
-module.exports = { getArticles, getArticle, patchArticle, deleteArticle, getCommentsByArticleId };
+const postCommentsByArticleId = (articleId, request) => {
+  const articleid = parseInt(articleId.article_id);
+  const insertObj = { author: request.username, body: request.body, article_id: articleid };
+  return connection('comments')
+    .insert(insertObj)
+    .where('article_id', '=', articleid)
+    .returning('*');
+};
+
+module.exports = { getArticles, getArticle, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId };

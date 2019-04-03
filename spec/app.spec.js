@@ -139,7 +139,6 @@ describe('/', () => {
               expect(body.article[0].comment_count).to.equal('0');
             });
         });
-
         it('PATCHES articles data with status 200 incrementing vote by 1', () => {
           return request
             .patch('/api/articles/2')
@@ -151,6 +150,19 @@ describe('/', () => {
               expect(body.articlePatch.topic).to.equal('mitch');
               expect(body.articlePatch.title).to.equal('Sony Vaio; or, The Laptop');
               expect(body.articlePatch.votes).to.equal(1);
+            });
+        });
+        it('PATCHES articles data with status 200 incrementing vote by -10', () => {
+          return request
+            .patch('/api/articles/2')
+            .send({ inc_votes: -10 })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articlePatch.article_id).to.equal(2);
+              expect(body.articlePatch.author).to.equal('icellusedkars');
+              expect(body.articlePatch.topic).to.equal('mitch');
+              expect(body.articlePatch.title).to.equal('Sony Vaio; or, The Laptop');
+              expect(body.articlePatch.votes).to.equal(-10);
             });
         });
         it('DELETES articles data with status 204 with the requested article_id to delete', () => {
@@ -203,8 +215,51 @@ describe('/', () => {
                 expect(body.comments[0].body).to.equal(`I am 100% sure that we're not completely sure.`);
               });
           });
+          it('POSTS comments data with status 201 for a given article_id', () => {
+            return request
+              .post('/api/articles/5/comments')
+              .expect(201)
+              .send({ username: 'icellusedkars', body: 'This is a great read, invest in your time and read this!' })
+              .then(({ body }) => {
+                expect(body.comments).to.have.lengthOf(1);
+                expect(body.comments[0].comment_id).to.equal(19);
+                expect(body.comments[0].author).to.equal('icellusedkars');
+                expect(body.comments[0].article_id).to.equal(5);
+                expect(body.comments[0].votes).to.equal(0);
+                expect(body.comments[0].body).to.equal('This is a great read, invest in your time and read this!');
+              });
+          });
         });
       });
+    });
+    describe('/comments/:comment_id', () => {
+      it('PATCHES comments data for the relevant comment_id with status 200 incrementing vote by -2', () => {
+        return request
+          .patch('/api/comments/2')
+          .send({ inc_votes: -2 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.commentPatch.comment_id).to.equal(2);
+            expect(body.commentPatch.author).to.equal('butter_bridge');
+            expect(body.commentPatch.article_id).to.equal(1);
+            expect(body.commentPatch.body).to.equal('The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.');
+            expect(body.commentPatch.votes).to.equal(12);
+          });
+      });
+      it('PATCHES comments data for the relevant comment_id with status 200 incrementing vote by 2', () => {
+        return request
+          .patch('/api/comments/2')
+          .send({ inc_votes: 2 })
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.commentPatch.comment_id).to.equal(2);
+            expect(body.commentPatch.author).to.equal('butter_bridge');
+            expect(body.commentPatch.article_id).to.equal(1);
+            expect(body.commentPatch.body).to.equal('The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.');
+            expect(body.commentPatch.votes).to.equal(16);
+          });
+      });
+
     });
   });
 });
