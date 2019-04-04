@@ -275,6 +275,37 @@ describe('/', () => {
               expect(body.articlePatch.votes).to.equal(-10);
             });
         });
+        it('PATCHES articles data with status 200 with no incrementing vote', () => {
+          return request
+            .patch('/api/articles/2')
+            .send({})
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articlePatch.article_id).to.equal(2);
+              expect(body.articlePatch.author).to.equal('icellusedkars');
+              expect(body.articlePatch.topic).to.equal('mitch');
+              expect(body.articlePatch.title).to.equal('Sony Vaio; or, The Laptop');
+              expect(body.articlePatch.votes).to.equal(0);
+            });
+        });
+        it('PATCHES articles data with status 400 with invalid incrementing vote', () => {
+          return request
+            .patch('/api/articles/2')
+            .send({ inc_votes: 'cat' })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Bad Request');
+            });
+        });
+        it('PATCHES articles data with status 400 with invalid incrementing vote', () => {
+          return request
+            .patch('/api/articles/2')
+            .send({ inc_votes: 'cat', name: 'rogersop' })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Bad Request');
+            });
+        });
         it('PATCHES articles data with status 404 article_id does not exist, incrementing vote by -10', () => {
           return request
             .patch('/api/articles/9999')

@@ -55,6 +55,9 @@ const fetchArticle = ((req, res, next) => {
 });
 
 const amendArticle = ((req, res, next) => {
+  if ((Object.keys(req.body).length === 0)) {
+    req.body = { inc_votes: 0 };
+  }
   patchArticle(req.body, req.params)
     .then(([articlePatch]) => {
       if (articlePatch === undefined) {
