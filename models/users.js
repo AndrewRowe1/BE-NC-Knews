@@ -7,4 +7,10 @@ const getUserByUserId = (username) => {
     .where('username', '=', user_name);
 };
 
-module.exports = getUserByUserId;
+const getUsernames = (user) => {
+  return connection
+    .select('username')
+    .from('users');
+}
+
+module.exports = { getUserByUserId, getUsernames };

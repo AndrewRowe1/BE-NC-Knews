@@ -1,20 +1,35 @@
 const { getArticles, getArticle, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId } = require('../models/articles');
+const { getUsernames } = require('../models/users');
 
 const fetchArticles = ((req, res, next) => {
-  const articleSort = ['article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at'];
+
   if (req.query.sort_by !== undefined) {
+    const articleSort = ['article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at'];
     const result = articleSort.filter((element) => element === req.query.sort_by);
     if (result.length === 0) {
       next({ status: 400, msg: 'Bad Request' })
     }
   }
-  const articleOrder = ['asc', 'desc'];
+
   if (req.query.order !== undefined) {
+    const articleOrder = ['asc', 'desc'];
     const result = articleOrder.filter((element) => element === req.query.order);
     if (result.length === 0) {
       next({ status: 400, msg: 'Bad Request' })
     }
   }
+
+  if (req.query.author !== undefined) {
+    getUsernames(req.query)
+      .then((users) => {
+        const authorExists = users.filter(element => element.username === req.query.author);
+        if (authorExists.length === 0) {
+          next({ status: 404, msg: 'Author not found' })
+        }
+      })
+      .catch(next);
+  };
+
   getArticles(req.query)
     .then((articles) => {
       res.status(200).send({ articles });

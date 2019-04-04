@@ -111,6 +111,14 @@ describe('/', () => {
               expect(body.articles[0].votes).to.equal(100);
             });
         });
+        it('GET status:404 and returns articles data queried by author that does not exist', () => {
+          return request
+            .get('/api/articles?author=andrew_rowe')
+            .expect(404)
+            .then((body) => {
+              expect(body.text).to.equal('Author not found');
+            });
+        });
       });
       describe('?topic', () => {
         it('GET status:200 and returns articles data queried by topic', () => {

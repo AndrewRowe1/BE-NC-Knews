@@ -1,4 +1,4 @@
-const getUserByUserId = require('../models/users');
+const { getUserByUserId } = require('../models/users');
 
 const fetchUserByUserId = ((req, res, next) => {
   getUserByUserId(req.params)
