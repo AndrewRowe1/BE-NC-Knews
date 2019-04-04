@@ -86,7 +86,12 @@ const removeArticle = ((req, res, next) => {
 const fetchCommentsByArticleId = ((req, res, next) => {
   getCommentsByArticleId(req.params, req.query)
     .then((comments) => {
-      res.status(200).send({ comments });
+      if (comments.length === 0) {
+        next({ status: 404, msg: 'Page not found' });
+      }
+      else {
+        res.status(200).send({ comments });
+      }
     })
     .catch(next);
 });

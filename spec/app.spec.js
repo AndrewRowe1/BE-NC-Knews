@@ -354,6 +354,22 @@ describe('/', () => {
                 expect(body.comments[0].body).to.equal('What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.');
               });
           })
+          it('GET status:404 for the non-existant article_id requested', () => {
+            return request
+              .get('/api/articles/2000/comments')
+              .expect(404)
+              .then((body) => {
+                expect(body.text).to.equal('Page not found');
+              });
+          });
+          it('GET status:400 and returns article data for an invalid article_id requested', () => {
+            return request
+              .get('/api/articles/cat/comments')
+              .expect(400)
+              .then(({ body }) => {
+                expect(body.msg).to.equal('Bad Request');
+              });
+          });
           it('GETS comments data with status 200 for a given article_id and sorts by author', () => {
             return request
               .get('/api/articles/1/comments?sort_by=body')
