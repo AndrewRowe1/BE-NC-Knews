@@ -140,7 +140,7 @@ describe('/', () => {
               expect(body.articles[0].comment_count).to.equal('0');
             });
         });
-        it.only('GET status:400 and returns articles data sorted by nonsense', () => {
+        it('GET status:400 and returns articles data sorted by nonsense', () => {
           return request
             .get('/api/articles?sort_by=nonsense')
             .expect(400)
