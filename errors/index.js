@@ -7,10 +7,11 @@ exports.methodNotAllowed = (req, res) => {
 };
 
 exports.handle500 = (err, req, res, next) => {
+  //console.log(err, 1)
   if (err.status) {
     res.status(err.status).send(err.msg);
   }
-  if (err.code === '42703' || err.code === '22P02') {
+  if (err.code === '42703' || err.code === '22P02' || err.code === '23502') {
     //res.status(400).send({ msg: err.message || 'Bad Request' });
     res.status(400).send({ msg: 'Bad Request' });
   }

@@ -97,14 +97,27 @@ const fetchCommentsByArticleId = ((req, res, next) => {
 });
 
 const sendCommentsByArticleId = ((req, res, next) => {
-  postCommentsByArticleId(req.params, req.body)
-    .then((comments) => {
-      //if (comments) next({msg: 'fgfdjvghj'})
-      //else 
-      res.status(201).send({ comments });
-    })
-    .catch(next)
-  //.catch((err)=>next(err));
+  if (req.body.username === undefined) {
+    next({ status: 400, msg: 'No username key on request' });
+  }
+  else {
+    getUsernames(req.body.username)
+      .then((users) => {
+        const authorExists = users.filter(element => element.username === req.body.username);
+        if (authorExists.length === 0) {
+          return Promise.reject({ status: 400, msg: 'Author does not exist' });
+        }
+        else {
+          return postCommentsByArticleId(req.params, req.body);
+        };
+      })
+      .then((comments) => {
+        //if (comments) next({msg: 'fgfdjvghj'})
+        //else
+        res.status(201).send({ comments });
+      })
+      .catch(next)
+  };
 });
 
 module.exports = { fetchArticles, fetchArticle, amendArticle, removeArticle, fetchCommentsByArticleId, sendCommentsByArticleId };

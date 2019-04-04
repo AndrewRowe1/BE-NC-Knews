@@ -411,6 +411,51 @@ describe('/', () => {
                 expect(body.comments[0].body).to.equal('This is a great read, invest in your time and read this!');
               });
           });
+          it('POSTS comments data with status 400 for a given article_id, invalid usernome key', () => {
+            return request
+              .post('/api/articles/5/comments')
+              .expect(400)
+              .send({ usernome: 'rogersop', body: 'This is a great read, invest in your time and read this!' })
+              .then((body) => {
+                expect(body.text).to.equal(`No username key on request`)
+              });
+          });
+          it('POSTS comments data with status 400 for a given article_id, invalid username', () => {
+            return request
+              .post('/api/articles/5/comments')
+              .expect(400)
+              .send({ username: 'andrew_rowe1', body: 'This is a great read, invest in your time and read this!' })
+              .then((body) => {
+                expect(body.text).to.equal(`Author does not exist`)
+              });
+          });
+          it('POSTS comments data with status 400 for a given article_id, invalid username of an integer', () => {
+            return request
+              .post('/api/articles/5/comments')
+              .expect(400)
+              .send({ username: 505, body: 'This is a great read, invest in your time and read this!' })
+              .then((body) => {
+                expect(body.text).to.equal(`Author does not exist`)
+              });
+          });
+          it('POSTS comments data with status 400 for a given article_id, no body along with username', () => {
+            return request
+              .post('/api/articles/5/comments')
+              .expect(400)
+              .send({ username: 'rogersop' })
+              .then(({ body }) => {
+                expect(body.msg).to.equal(`Bad Request`)
+              });
+          });
+          it('POSTS comments data with status 400 for a given article_id, no username along with body', () => {
+            return request
+              .post('/api/articles/5/comments')
+              .expect(400)
+              .send({ body: 'This is a great read, invest in your time and read this!' })
+              .then((body) => {
+                expect(body.text).to.equal(`No username key on request`)
+              });
+          });
           it('POSTS comments data with status 404 for an invalid article_id', () => {
             return request
               .post('/api/articles/9999/comments')
