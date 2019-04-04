@@ -10,7 +10,7 @@ exports.handle500 = (err, req, res, next) => {
   if (err.status) {
     res.status(err.status).send(err.msg);
   }
-  if (err.code === '42703') {
+  if (err.code === '42703' || err.code === '22P02') {
     //res.status(400).send({ msg: err.message || 'Bad Request' });
     res.status(400).send({ msg: 'Bad Request' });
   }

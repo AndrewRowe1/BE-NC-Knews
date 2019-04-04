@@ -233,6 +233,22 @@ describe('/', () => {
               expect(body.article[0].comment_count).to.equal('0');
             });
         });
+        it('GET status:404 and returns article data for the non-existant article_id requested', () => {
+          return request
+            .get('/api/articles/2000')
+            .expect(404)
+            .then((body) => {
+              expect(body.text).to.equal('Page not found');
+            });
+        });
+        it('GET status:400 and returns article data for an invalid article_id requested', () => {
+          return request
+            .get('/api/articles/cat')
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Bad Request');
+            });
+        });
         it('PATCHES articles data with status 200 incrementing vote by 1', () => {
           return request
             .patch('/api/articles/2')

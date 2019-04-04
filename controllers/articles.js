@@ -44,7 +44,12 @@ const fetchArticles = ((req, res, next) => {
 const fetchArticle = ((req, res, next) => {
   getArticle(req.params)
     .then((article) => {
-      res.status(200).send({ article });
+      if (article.length === 0) {
+        next({ status: 404, msg: 'Page not found' });
+      }
+      else {
+        res.status(200).send({ article });
+      }
     })
     .catch(next)
 });
