@@ -176,8 +176,8 @@ describe('/', () => {
           return request
             .get('/api/articles?sort_by=nonsense')
             .expect(400)
-            .then((body) => {
-              expect(body.text).to.equal('Bad Request');
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Bad Request');
             });
         });
       });

@@ -4,14 +4,6 @@ const { getTopicsSlug } = require('../models/topics');
 
 const fetchArticles = ((req, res, next) => {
 
-  if (req.query.sort_by !== undefined) {
-    const articleSort = ['article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at'];
-    const result = articleSort.filter((element) => element === req.query.sort_by);
-    if (result.length === 0) {
-      next({ status: 400, msg: 'Bad Request' })
-    }
-  }
-
   if (req.query.order !== undefined) {
     const articleOrder = ['asc', 'desc'];
     const result = articleOrder.filter((element) => element === req.query.order);
