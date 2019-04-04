@@ -6,4 +6,10 @@ const getTopics = () => {
     .from('topics');
 }
 
-module.exports = getTopics;
+const getTopicsSlug = () => {
+  return connection
+    .select('slug')
+    .from('topics');
+}
+
+module.exports = { getTopics, getTopicsSlug };

@@ -133,6 +133,14 @@ describe('/', () => {
               expect(body.articles[0].comment_count).to.equal('13');
             });
         });
+        it('GET status:404 and returns topics data queried by topic that does not exist', () => {
+          return request
+            .get('/api/articles?topic=andrew_rowe')
+            .expect(404)
+            .then((body) => {
+              expect(body.text).to.equal('Topic not found');
+            });
+        });
       });
       describe('?sort_by', () => {
         it('GET status:200 and returns articles data sorted by title', () => {

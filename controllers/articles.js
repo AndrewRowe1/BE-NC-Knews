@@ -1,5 +1,6 @@
 const { getArticles, getArticle, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId } = require('../models/articles');
 const { getUsernames } = require('../models/users');
+const { getTopicsSlug } = require('../models/topics');
 
 const fetchArticles = ((req, res, next) => {
 
@@ -25,6 +26,17 @@ const fetchArticles = ((req, res, next) => {
         const authorExists = users.filter(element => element.username === req.query.author);
         if (authorExists.length === 0) {
           next({ status: 404, msg: 'Author not found' })
+        }
+      })
+      .catch(next);
+  };
+
+  if (req.query.topic !== undefined) {
+    getTopicsSlug(req.query)
+      .then((topics) => {
+        const topicExists = topics.filter(element => element.slug === req.query.topic);
+        if (topicExists.length === 0) {
+          next({ status: 404, msg: 'Topic not found' })
         }
       })
       .catch(next);
