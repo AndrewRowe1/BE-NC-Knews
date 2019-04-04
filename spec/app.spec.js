@@ -140,6 +140,14 @@ describe('/', () => {
               expect(body.articles[0].comment_count).to.equal('0');
             });
         });
+        it.only('GET status:400 and returns articles data sorted by nonsense', () => {
+          return request
+            .get('/api/articles?sort_by=nonsense')
+            .expect(400)
+            .then((body) => {
+              expect(body.text).to.equal('Bad Request');
+            });
+        });
       });
       describe('?sort_by', () => {
         it('GET status:200 and returns articles data sorted by default(date)', () => {

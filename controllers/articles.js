@@ -1,6 +1,13 @@
 const { getArticles, getArticle, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId } = require('../models/articles');
 
 const fetchArticles = ((req, res, next) => {
+  const articleOrderSort = ['article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at'];
+  if (req.query.sort_by !== undefined) {
+    const result = articleOrderSort.filter((element) => element === req.query.sort_by);
+    if (result.length === 0) {
+      next({ status: 400, msg: 'Bad Request' })
+    }
+  }
   getArticles(req.query)
     .then((articles) => {
       res.status(200).send({ articles });
