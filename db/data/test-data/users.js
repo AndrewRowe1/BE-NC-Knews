@@ -14,4 +14,9 @@ module.exports = [
     name: 'paul',
     avatar_url: 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4',
   },
+  {
+    username: 'freddieflintoff',
+    name: 'freddie',
+    avatar_url: 'https://avatars1.fredisgreat.com/u/666666666?s=400&v=4',
+  },
 ];

@@ -119,6 +119,14 @@ describe('/', () => {
               expect(body.text).to.equal('Author not found');
             });
         });
+        it('GET status:200 and returns no articles data queried by author that exists with no articles - note created freddieflintoff in testdata as an author', () => {
+          return request
+            .get('/api/articles?author=freddieflintoff')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articles).to.have.lengthOf(0);
+            });
+        });
       });
       describe('?topic', () => {
         it('GET status:200 and returns articles data queried by topic', () => {
@@ -139,6 +147,14 @@ describe('/', () => {
             .expect(404)
             .then((body) => {
               expect(body.text).to.equal('Topic not found');
+            });
+        });
+        it('GET status:200 and returns no articles data queried by topic that exists with no articles - note created brexitchaos as a topic', () => {
+          return request
+            .get('/api/articles?topic=brexitchaos')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articles).to.have.lengthOf(0);
             });
         });
       });

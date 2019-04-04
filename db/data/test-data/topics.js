@@ -7,4 +7,8 @@ module.exports = [
     description: 'Not dogs',
     slug: 'cats',
   },
+  {
+    description: 'Not a topic to discuss in the current environment!',
+    slug: 'brexitchaos',
+  },
 ];
