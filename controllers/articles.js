@@ -1,9 +1,16 @@
 const { getArticles, getArticle, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId } = require('../models/articles');
 
 const fetchArticles = ((req, res, next) => {
-  const articleOrderSort = ['article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at'];
+  const articleSort = ['article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at'];
   if (req.query.sort_by !== undefined) {
-    const result = articleOrderSort.filter((element) => element === req.query.sort_by);
+    const result = articleSort.filter((element) => element === req.query.sort_by);
+    if (result.length === 0) {
+      next({ status: 400, msg: 'Bad Request' })
+    }
+  }
+  const articleOrder = ['asc', 'desc'];
+  if (req.query.order !== undefined) {
+    const result = articleOrder.filter((element) => element === req.query.order);
     if (result.length === 0) {
       next({ status: 400, msg: 'Bad Request' })
     }

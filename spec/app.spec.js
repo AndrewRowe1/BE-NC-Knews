@@ -178,6 +178,14 @@ describe('/', () => {
               expect(body.articles[0].comment_count).to.equal('13');
             });
         });
+        it('GET status:400 and returns articles data ordered by nonsense', () => {
+          return request
+            .get('/api/articles?order=nonsense')
+            .expect(400)
+            .then((body) => {
+              expect(body.text).to.equal('Bad Request');
+            });
+        });
       });
       describe(':article_id', () => {
         it('GET status:200 and returns article data for the article_id requested', () => {
