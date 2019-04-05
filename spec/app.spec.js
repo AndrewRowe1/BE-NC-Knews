@@ -199,6 +199,19 @@ describe('/', () => {
       describe('?order', () => {
         it('GET status:200 and returns articles data ordered descending by date', () => {
           return request
+            .get('/api/articles?order=asc')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articles).to.have.lengthOf(12);
+              expect(body.articles[0].author).to.equal('butter_bridge');
+              expect(body.articles[0].title).to.equal('Moustache');
+              expect(body.articles[0].article_id).to.equal(12);
+              expect(body.articles[0].votes).to.equal(0);
+              expect(body.articles[0].comment_count).to.equal('0');
+            });
+        });
+        it('GET status:200 and returns articles data ordered descending by date', () => {
+          return request
             .get('/api/articles?order=desc')
             .expect(200)
             .then(({ body }) => {
@@ -225,12 +238,11 @@ describe('/', () => {
             .get('/api/articles/2')
             .expect(200)
             .then(({ body }) => {
-              expect(body.article).to.have.lengthOf(1);
-              expect(body.article[0].author).to.equal('icellusedkars');
-              expect(body.article[0].title).to.equal('Sony Vaio; or, The Laptop');
-              expect(body.article[0].article_id).to.equal(2);
-              expect(body.article[0].votes).to.equal(0);
-              expect(body.article[0].comment_count).to.equal('0');
+              expect(body.article.author).to.equal('icellusedkars');
+              expect(body.article.title).to.equal('Sony Vaio; or, The Laptop');
+              expect(body.article.article_id).to.equal(2);
+              expect(body.article.votes).to.equal(0);
+              expect(body.article.comment_count).to.equal('0');
             });
         });
         it('GET status:404 and returns article data for the non-existant article_id requested', () => {

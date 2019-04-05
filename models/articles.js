@@ -18,7 +18,7 @@ const getArticles = ({ author, topic, sort_by, order }) => {
         query.orderBy(sort_by, 'desc');
       }
       else {
-        query.orderBy('articles.created_at', 'desc');
+        query.orderBy('articles.created_at', order || 'desc');
       }
       if (order) {
         query.orderBy('articles.created_at', order || 'desc');
@@ -32,18 +32,13 @@ const getArticle = ({ article_id }) => {
     .count('comment_id as comment_count')
     .from('articles')
     .leftJoin('comments', 'articles.article_id', 'comments.article_id')
-    .modify((query) => {
-      if (article_id) {
-        query.where({ 'articles.article_id': article_id });
-      }
-    })
+    .where({ 'articles.article_id': article_id })
     .groupBy('articles.article_id');
 }
 
-const patchArticle = (articlePatch, articleId) => {
-  const voteIncrement = articlePatch.inc_votes;
-  const articleIdInt = articleId.article_id;
-  return connection('articles').where('article_id', '=', articleIdInt).increment('votes', voteIncrement).returning('*');
+const patchArticle = (articlePatch, { article_id }) => {
+  const voteIncrement = articlePatch.inc_votes || 0;
+  return connection('articles').where('article_id', '=', article_id).increment('votes', voteIncrement).returning('*');
 };
 
 const deleteArticle = (articleId) => {
