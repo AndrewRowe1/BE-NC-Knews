@@ -582,7 +582,7 @@ describe('/', () => {
       it('PATCHES comments data for the relevant comment_id with status 200 with no incrementing vote', () => {
         return request
           .patch('/api/comments/2')
-          .send()
+          .send({})
           .expect(200)
           .then(({ body }) => {
             expect(body.comment.comment_id).to.equal(2);
@@ -590,6 +590,24 @@ describe('/', () => {
             expect(body.comment.article_id).to.equal(1);
             expect(body.comment.body).to.equal('The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.');
             expect(body.comment.votes).to.equal(14);
+          });
+      });
+      it('PATCHES comments data with status 400 for the relevant comment_id, invalid inc_vates key', () => {
+        return request
+          .patch('/api/comments/2')
+          .send({ inc_vates: 2 })
+          .expect(400)
+          .then((body) => {
+            expect(body.text).to.equal(`No inc_votes key on request`)
+          });
+      });
+      it('POSTS comments data with status 404 for an invalid comment_id', () => {
+        return request
+          .patch('/api/comments/9999')
+          .expect(404)
+          .send({ inc_votes: 2 })
+          .then((body) => {
+            expect(body.text).to.equal(`Comment not found`)
           });
       });
       it('PATCHES comments data with status 404 comment_id does not exist, incrementing vote by -10', () => {
