@@ -1,4 +1,4 @@
-const { getArticles, getArticle, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId } = require('../models/articles');
+const { getArticles, getArticle, getArticleIds, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId } = require('../models/articles');
 const { getUsernames } = require('../models/users');
 const { getTopicsSlug } = require('../models/topics');
 
@@ -61,7 +61,7 @@ const amendArticle = ((req, res, next) => {
         next({ status: 404, msg: 'Article not found' })
       }
       else {
-        res.status(200).send({ articlePatch });
+        res.status(200).send({ article: { articlePatch } });
       }
     })
     .catch(next);
@@ -81,13 +81,17 @@ const removeArticle = ((req, res, next) => {
 });
 
 const fetchCommentsByArticleId = ((req, res, next) => {
-  getCommentsByArticleId(req.params, req.query)
-    .then((comments) => {
-      if (comments.length === 0) {
+  Promise.all([getArticleIds(), getCommentsByArticleId(req.params, req.query)])
+    .then(([articleIds, [comments]]) => {
+      const articleIdExists = articleIds.filter(element => element.article_id === parseInt(req.params.article_id));
+      if (articleIdExists.length === 0) {
         next({ status: 404, msg: 'Page not found' });
       }
+      else if (comments === undefined) {
+        res.status(200).send({ comment: {} });
+      }
       else {
-        res.status(200).send({ comments });
+        res.status(200).send({ comment: { comments } });
       }
     })
     .catch(next);
@@ -108,10 +112,10 @@ const sendCommentsByArticleId = ((req, res, next) => {
           return postCommentsByArticleId(req.params, req.body);
         };
       })
-      .then((comments) => {
+      .then(([comment]) => {
         //if (comments) next({msg: 'fgfdjvghj'})
         //else
-        res.status(201).send({ comments });
+        res.status(201).send({ comment });
       })
       .catch(next)
   };

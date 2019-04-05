@@ -235,6 +235,18 @@ describe('/', () => {
       describe(':article_id', () => {
         it('GET status:200 and returns article data for the article_id requested', () => {
           return request
+            .get('/api/articles/1')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.article.author).to.equal('butter_bridge');
+              expect(body.article.title).to.equal('Living in the shadow of a great man');
+              expect(body.article.article_id).to.equal(1);
+              expect(body.article.votes).to.equal(100);
+              expect(body.article.comment_count).to.equal('13');
+            });
+        });
+        it('GET status:200 and returns article data for the article_id requested', () => {
+          return request
             .get('/api/articles/2')
             .expect(200)
             .then(({ body }) => {
@@ -267,11 +279,11 @@ describe('/', () => {
             .send({ inc_votes: 1 })
             .expect(200)
             .then(({ body }) => {
-              expect(body.articlePatch.article_id).to.equal(2);
-              expect(body.articlePatch.author).to.equal('icellusedkars');
-              expect(body.articlePatch.topic).to.equal('mitch');
-              expect(body.articlePatch.title).to.equal('Sony Vaio; or, The Laptop');
-              expect(body.articlePatch.votes).to.equal(1);
+              expect(body.article.articlePatch.article_id).to.equal(2);
+              expect(body.article.articlePatch.author).to.equal('icellusedkars');
+              expect(body.article.articlePatch.topic).to.equal('mitch');
+              expect(body.article.articlePatch.title).to.equal('Sony Vaio; or, The Laptop');
+              expect(body.article.articlePatch.votes).to.equal(1);
             });
         });
         it('PATCHES articles data with status 200 incrementing vote by -10', () => {
@@ -280,11 +292,11 @@ describe('/', () => {
             .send({ inc_votes: -10 })
             .expect(200)
             .then(({ body }) => {
-              expect(body.articlePatch.article_id).to.equal(2);
-              expect(body.articlePatch.author).to.equal('icellusedkars');
-              expect(body.articlePatch.topic).to.equal('mitch');
-              expect(body.articlePatch.title).to.equal('Sony Vaio; or, The Laptop');
-              expect(body.articlePatch.votes).to.equal(-10);
+              expect(body.article.articlePatch.article_id).to.equal(2);
+              expect(body.article.articlePatch.author).to.equal('icellusedkars');
+              expect(body.article.articlePatch.topic).to.equal('mitch');
+              expect(body.article.articlePatch.title).to.equal('Sony Vaio; or, The Laptop');
+              expect(body.article.articlePatch.votes).to.equal(-10);
             });
         });
         it('PATCHES articles data with status 200 with no incrementing vote', () => {
@@ -293,11 +305,11 @@ describe('/', () => {
             .send({})
             .expect(200)
             .then(({ body }) => {
-              expect(body.articlePatch.article_id).to.equal(2);
-              expect(body.articlePatch.author).to.equal('icellusedkars');
-              expect(body.articlePatch.topic).to.equal('mitch');
-              expect(body.articlePatch.title).to.equal('Sony Vaio; or, The Laptop');
-              expect(body.articlePatch.votes).to.equal(0);
+              expect(body.article.articlePatch.article_id).to.equal(2);
+              expect(body.article.articlePatch.author).to.equal('icellusedkars');
+              expect(body.article.articlePatch.topic).to.equal('mitch');
+              expect(body.article.articlePatch.title).to.equal('Sony Vaio; or, The Laptop');
+              expect(body.article.articlePatch.votes).to.equal(0);
             });
         });
         it('PATCHES articles data with status 400 with invalid incrementing vote', () => {
@@ -353,17 +365,36 @@ describe('/', () => {
             });
         });
         describe('/comments', () => {
-          it('GETS comments data with status 200 for a given article_id', () => {
+          it('GETS comments data with status 200 for a given article_id of 1', () => {
+            return request
+              .get('/api/articles/1/comments')
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comment.comments.author).to.equal('butter_bridge');
+                expect(body.comment.comments.article_id).to.equal(1);
+                expect(body.comment.comments.comment_id).to.equal(2);
+                expect(body.comment.comments.votes).to.equal(14);
+                expect(body.comment.comments.body).to.equal('The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.');
+              });
+          })
+          it('GETS comments data with status 200 for a given article_id of 5', () => {
             return request
               .get('/api/articles/5/comments')
               .expect(200)
               .then(({ body }) => {
-                expect(body.comments).to.have.lengthOf(2);
-                expect(body.comments[0].author).to.equal('icellusedkars');
-                expect(body.comments[0].article_id).to.equal(5);
-                expect(body.comments[0].comment_id).to.equal(14);
-                expect(body.comments[0].votes).to.equal(16);
-                expect(body.comments[0].body).to.equal('What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.');
+                expect(body.comment.comments.author).to.equal('icellusedkars');
+                expect(body.comment.comments.article_id).to.equal(5);
+                expect(body.comment.comments.comment_id).to.equal(14);
+                expect(body.comment.comments.votes).to.equal(16);
+                expect(body.comment.comments.body).to.equal('What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.');
+              });
+          })
+          it('GETS comments data with status 200 for a given article_id of 2 which has no comments', () => {
+            return request
+              .get('/api/articles/2/comments')
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comment).to.eql({});
               });
           })
           it('GET status:404 for the non-existant article_id requested', () => {
@@ -387,13 +418,12 @@ describe('/', () => {
               .get('/api/articles/1/comments?sort_by=body')
               .expect(200)
               .then(({ body }) => {
-                expect(body.comments[0]).to.contain.keys('author', 'article_id', 'comment_id', 'votes', 'created_at', 'body')
-                expect(body.comments).to.have.lengthOf(13);
-                expect(body.comments[0].author).to.equal('butter_bridge');
-                expect(body.comments[0].article_id).to.equal(1);
-                expect(body.comments[0].comment_id).to.equal(18);
-                expect(body.comments[0].votes).to.equal(16);
-                expect(body.comments[0].body).to.equal('This morning, I showered for nine minutes.');
+                expect(body.comment.comments).to.contain.keys('author', 'article_id', 'comment_id', 'votes', 'created_at', 'body')
+                expect(body.comment.comments.author).to.equal('butter_bridge');
+                expect(body.comment.comments.article_id).to.equal(1);
+                expect(body.comment.comments.comment_id).to.equal(18);
+                expect(body.comment.comments.votes).to.equal(16);
+                expect(body.comment.comments.body).to.equal('This morning, I showered for nine minutes.');
               });
           });
           it('GETS comments data with status 200 for a given article_id and orders ascending', () => {
@@ -401,12 +431,11 @@ describe('/', () => {
               .get('/api/articles/5/comments?order=asc')
               .expect(200)
               .then(({ body }) => {
-                expect(body.comments).to.have.lengthOf(2);
-                expect(body.comments[0].author).to.equal('butter_bridge');
-                expect(body.comments[0].article_id).to.equal(5);
-                expect(body.comments[0].comment_id).to.equal(15);
-                expect(body.comments[0].votes).to.equal(1);
-                expect(body.comments[0].body).to.equal(`I am 100% sure that we're not completely sure.`);
+                expect(body.comment.comments.author).to.equal('butter_bridge');
+                expect(body.comment.comments.article_id).to.equal(5);
+                expect(body.comment.comments.comment_id).to.equal(15);
+                expect(body.comment.comments.votes).to.equal(1);
+                expect(body.comment.comments.body).to.equal(`I am 100% sure that we're not completely sure.`);
               });
           });
           it('POSTS comments data with status 201 for a given article_id', () => {
@@ -415,12 +444,20 @@ describe('/', () => {
               .expect(201)
               .send({ username: 'icellusedkars', body: 'This is a great read, invest in your time and read this!' })
               .then(({ body }) => {
-                expect(body.comments).to.have.lengthOf(1);
-                expect(body.comments[0].comment_id).to.equal(19);
-                expect(body.comments[0].author).to.equal('icellusedkars');
-                expect(body.comments[0].article_id).to.equal(5);
-                expect(body.comments[0].votes).to.equal(0);
-                expect(body.comments[0].body).to.equal('This is a great read, invest in your time and read this!');
+                expect(body.comment.comment_id).to.equal(19);
+                expect(body.comment.author).to.equal('icellusedkars');
+                expect(body.comment.article_id).to.equal(5);
+                expect(body.comment.votes).to.equal(0);
+                expect(body.comment.body).to.equal('This is a great read, invest in your time and read this!');
+              });
+          });
+          it('POSTS comments data with status 400 for a given article_id of 1, does not include body key', () => {
+            return request
+              .post('/api/articles/1/comments')
+              .expect(400)
+              .send({ username: 'icellusedkars' })
+              .then(({ body }) => {
+                expect(body.msg).to.equal('Bad Request');
               });
           });
           it('POSTS comments data with status 400 for a given article_id, invalid usernome key', () => {
@@ -503,11 +540,11 @@ describe('/', () => {
           .send({ inc_votes: -2 })
           .expect(200)
           .then(({ body }) => {
-            expect(body.commentPatch.comment_id).to.equal(2);
-            expect(body.commentPatch.author).to.equal('butter_bridge');
-            expect(body.commentPatch.article_id).to.equal(1);
-            expect(body.commentPatch.body).to.equal('The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.');
-            expect(body.commentPatch.votes).to.equal(12);
+            expect(body.comment.comment_id).to.equal(2);
+            expect(body.comment.author).to.equal('butter_bridge');
+            expect(body.comment.article_id).to.equal(1);
+            expect(body.comment.body).to.equal('The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.');
+            expect(body.comment.votes).to.equal(12);
           });
       });
       it('PATCHES comments data for the relevant comment_id with status 200 incrementing vote by 2', () => {
@@ -516,11 +553,24 @@ describe('/', () => {
           .send({ inc_votes: 2 })
           .expect(200)
           .then(({ body }) => {
-            expect(body.commentPatch.comment_id).to.equal(2);
-            expect(body.commentPatch.author).to.equal('butter_bridge');
-            expect(body.commentPatch.article_id).to.equal(1);
-            expect(body.commentPatch.body).to.equal('The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.');
-            expect(body.commentPatch.votes).to.equal(16);
+            expect(body.comment.comment_id).to.equal(2);
+            expect(body.comment.author).to.equal('butter_bridge');
+            expect(body.comment.article_id).to.equal(1);
+            expect(body.comment.body).to.equal('The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.');
+            expect(body.comment.votes).to.equal(16);
+          });
+      });
+      it('PATCHES comments data for the relevant comment_id with status 200 with no incrementing vote', () => {
+        return request
+          .patch('/api/comments/2')
+          .send()
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comment.comment_id).to.equal(2);
+            expect(body.comment.author).to.equal('butter_bridge');
+            expect(body.comment.article_id).to.equal(1);
+            expect(body.comment.body).to.equal('The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.');
+            expect(body.comment.votes).to.equal(14);
           });
       });
       it('PATCHES comments data with status 404 comment_id does not exist, incrementing vote by -10', () => {
@@ -572,11 +622,18 @@ describe('/', () => {
           .get('/api/users/rogersop')
           .expect(200)
           .then(({ body }) => {
-            expect(body.users).to.have.lengthOf(1);
-            expect(body.users[0]).to.contain.keys('username', 'avatar_url', 'name')
-            expect(body.users[0].username).to.equal('rogersop');
-            expect(body.users[0].avatar_url).to.equal('https://avatars2.githubusercontent.com/u/24394918?s=400&v=4');
-            expect(body.users[0].name).to.equal('paul');
+            expect(body.users).to.contain.keys('username', 'avatar_url', 'name')
+            expect(body.users.username).to.equal('rogersop');
+            expect(body.users.avatar_url).to.equal('https://avatars2.githubusercontent.com/u/24394918?s=400&v=4');
+            expect(body.users.name).to.equal('paul');
+          });
+      });
+      it('GETS users data with status 404 for a nonsense username', () => {
+        return request
+          .get('/api/users/nonsense')
+          .expect(404)
+          .then((body) => {
+            expect(body.text).to.equal('Page not found');
           });
       });
       it('POST status:405 and returns method not allowed', () => {

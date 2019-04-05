@@ -36,6 +36,11 @@ const getArticle = ({ article_id }) => {
     .groupBy('articles.article_id');
 }
 
+const getArticleIds = () => {
+  return connection.select('article_id')
+    .from('articles');
+}
+
 const patchArticle = (articlePatch, { article_id }) => {
   const voteIncrement = articlePatch.inc_votes || 0;
   return connection('articles').where('article_id', '=', article_id).increment('votes', voteIncrement).returning('*');
@@ -46,8 +51,7 @@ const deleteArticle = (articleId) => {
   return connection('articles').del().where('article_id', '=', articleIdInt).returning('*');
 };
 
-const getCommentsByArticleId = (articleId, { sort_by, order }) => {
-  const article_id = parseInt(articleId.article_id);
+const getCommentsByArticleId = ({ article_id }, { sort_by, order }) => {
   return connection('comments')
     .select('*')
     .where('article_id', '=', article_id)
@@ -70,4 +74,4 @@ const postCommentsByArticleId = (articleId, request) => {
     .returning('*');
 };
 
-module.exports = { getArticles, getArticle, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId };
+module.exports = { getArticles, getArticle, getArticleIds, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId };
