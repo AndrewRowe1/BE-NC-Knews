@@ -5,6 +5,8 @@ const commentRouter = require('./comments');
 const topicRouter = require('./topics');
 const userRouter = require('./users');
 
+const { fetchEndPoints } = require('../controllers/api');
+
 const { methodNotAllowed } = require('../errors');
 
 apiRouter.use('/articles', articleRouter);
@@ -14,7 +16,7 @@ apiRouter.use('/users', userRouter);
 
 apiRouter
   .route('/')
-  .get((req, res) => res.send({ ok: true }))
+  .get(fetchEndPoints)
   .all(methodNotAllowed);
 
 module.exports = apiRouter;

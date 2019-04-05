@@ -23,6 +23,9 @@ describe('/', () => {
       return request
         .get('/api')
         .expect(200)
+        .then(({ body }) => {
+          expect(body.endpoints).to.contain.keys('api', 'api/articles', 'api/articles/:article_id', 'api/article/:article_id/comments', 'api/comments/:comment_id', 'api/topics', 'api/users/:user_id');
+        });
     });
     describe('/topics', () => {
       it('GET status:200 and returns topics data', () => {
