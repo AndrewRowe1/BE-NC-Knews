@@ -10,7 +10,7 @@ const fetchArticles = ((req, res, next) => {
     if (result.length === 0) {
       next({ status: 400, msg: 'Bad Request' })
     }
-  }
+  };
 
   if (req.query.author !== undefined) {
     getUsernames(req.query)
@@ -35,8 +35,13 @@ const fetchArticles = ((req, res, next) => {
   };
 
   getArticles(req.query)
-    .then((articles) => {
-      res.status(200).send({ articles });
+    .then(([articles]) => {
+      if (articles === undefined) {
+        res.status(200).send({ articles: [] });
+      }
+      else {
+        res.status(200).send({ articles });
+      }
     })
     .catch(next)
 });
@@ -56,12 +61,12 @@ const fetchArticle = ((req, res, next) => {
 
 const amendArticle = ((req, res, next) => {
   patchArticle(req.body, req.params)
-    .then(([articlePatch]) => {
-      if (articlePatch === undefined) {
+    .then(([article]) => {
+      if (article === undefined) {
         next({ status: 404, msg: 'Article not found' })
       }
       else {
-        res.status(200).send({ article: { articlePatch } });
+        res.status(200).send({ article });
       }
     })
     .catch(next);
@@ -69,12 +74,12 @@ const amendArticle = ((req, res, next) => {
 
 const removeArticle = ((req, res, next) => {
   deleteArticle(req.params)
-    .then(([articleDelete]) => {
-      if (articleDelete === undefined) {
+    .then(([article]) => {
+      if (article === undefined) {
         next({ status: 404, msg: 'Article not found' })
       }
       else {
-        res.status(204).send({ articleDelete });
+        res.status(204).send({ article });
       }
     })
     .catch(next);
@@ -88,10 +93,10 @@ const fetchCommentsByArticleId = ((req, res, next) => {
         next({ status: 404, msg: 'Page not found' });
       }
       else if (comments === undefined) {
-        res.status(200).send({ comment: {} });
+        res.status(200).send({ comments: [] });
       }
       else {
-        res.status(200).send({ comment: { comments } });
+        res.status(200).send({ comments });
       }
     })
     .catch(next);
@@ -112,10 +117,10 @@ const sendCommentsByArticleId = ((req, res, next) => {
           return postCommentsByArticleId(req.params, req.body);
         };
       })
-      .then(([comment]) => {
+      .then(([comments]) => {
         //if (comments) next({msg: 'fgfdjvghj'})
         //else
-        res.status(201).send({ comment });
+        res.status(201).send({ comments });
       })
       .catch(next)
   };

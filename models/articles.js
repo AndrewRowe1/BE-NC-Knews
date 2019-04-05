@@ -58,7 +58,10 @@ const getCommentsByArticleId = ({ article_id }, { sort_by, order }) => {
     .modify((query) => {
       if (sort_by) {
         query.orderBy(sort_by || 'created_at', 'desc');
-      };
+      }
+      else if (!order) {
+        query.orderBy('created_at', 'desc');
+      }
       if (order) {
         query.orderBy('created_at', order || 'desc');
       }
