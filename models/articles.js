@@ -1,6 +1,6 @@
 const connection = require('../db/connection');
 
-const getArticles = ({ author, topic, sort_by, order }) => {
+const getArticles = ({ author, topic, sort_by, order, limit }) => {
   return connection
     .select('articles.author', 'title', 'articles.article_id', 'topic', 'articles.created_at',
       'articles.votes')
@@ -24,7 +24,8 @@ const getArticles = ({ author, topic, sort_by, order }) => {
         query.orderBy('articles.created_at', order || 'desc');
       }
     })
-    .groupBy('articles.article_id');
+    .groupBy('articles.article_id')
+    .limit(limit || 10);
 }
 
 const getArticle = ({ article_id }) => {
@@ -51,7 +52,7 @@ const deleteArticle = (articleId) => {
   return connection('articles').del().where('article_id', '=', articleIdInt).returning('*');
 };
 
-const getCommentsByArticleId = ({ article_id }, { sort_by, order }) => {
+const getCommentsByArticleId = ({ article_id }, { sort_by, order, limit }) => {
   return connection('comments')
     .select('*')
     .where('article_id', '=', article_id)
@@ -65,7 +66,8 @@ const getCommentsByArticleId = ({ article_id }, { sort_by, order }) => {
       if (order) {
         query.orderBy('created_at', order || 'desc');
       }
-    });
+    })
+    .limit(limit || 10);
 };
 
 const postCommentsByArticleId = (articleId, request) => {

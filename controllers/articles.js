@@ -35,7 +35,7 @@ const fetchArticles = ((req, res, next) => {
   };
 
   getArticles(req.query)
-    .then(([articles]) => {
+    .then((articles) => {
       if (articles === undefined) {
         res.status(200).send({ articles: [] });
       }
@@ -87,7 +87,7 @@ const removeArticle = ((req, res, next) => {
 
 const fetchCommentsByArticleId = ((req, res, next) => {
   Promise.all([getArticleIds(), getCommentsByArticleId(req.params, req.query)])
-    .then(([articleIds, [comments]]) => {
+    .then(([articleIds, comments]) => {
       const articleIdExists = articleIds.filter(element => element.article_id === parseInt(req.params.article_id));
       if (articleIdExists.length === 0) {
         next({ status: 404, msg: 'Page not found' });
@@ -117,7 +117,7 @@ const sendCommentsByArticleId = ((req, res, next) => {
           return postCommentsByArticleId(req.params, req.body);
         };
       })
-      .then(([comments]) => {
+      .then((comments) => {
         //if (comments) next({msg: 'fgfdjvghj'})
         //else
         res.status(201).send({ comments });
