@@ -33,9 +33,9 @@ describe('/', () => {
           .get('/api/topics')
           .expect(200)
           .then(({ body }) => {
-            expect(body.topics).to.contain.keys('description', 'slug');
-            expect(body.topics.slug).to.equal('mitch');
-            expect(body.topics.description).to.equal('The man, the Mitch, the legend');
+            expect(body.topics[0]).to.contain.keys('description', 'slug');
+            expect(body.topics[0].slug).to.equal('mitch');
+            expect(body.topics[0].description).to.equal('The man, the Mitch, the legend');
           });
       });
       it('PATCH status:405 and returns method not allowed', () => {
@@ -495,11 +495,11 @@ describe('/', () => {
               .expect(201)
               .send({ username: 'icellusedkars', body: 'This is a great read, invest in your time and read this!' })
               .then(({ body }) => {
-                expect(body.comments[0].comment_id).to.equal(19);
-                expect(body.comments[0].author).to.equal('icellusedkars');
-                expect(body.comments[0].article_id).to.equal(5);
-                expect(body.comments[0].votes).to.equal(0);
-                expect(body.comments[0].body).to.equal('This is a great read, invest in your time and read this!');
+                expect(body.comment[0].comment_id).to.equal(19);
+                expect(body.comment[0].author).to.equal('icellusedkars');
+                expect(body.comment[0].article_id).to.equal(5);
+                expect(body.comment[0].votes).to.equal(0);
+                expect(body.comment[0].body).to.equal('This is a great read, invest in your time and read this!');
               });
           });
           it('POSTS comments data with status 400 for a given article_id of 1, does not include body key', () => {
@@ -691,10 +691,10 @@ describe('/', () => {
           .get('/api/users/rogersop')
           .expect(200)
           .then(({ body }) => {
-            expect(body.users).to.contain.keys('username', 'avatar_url', 'name')
-            expect(body.users.username).to.equal('rogersop');
-            expect(body.users.avatar_url).to.equal('https://avatars2.githubusercontent.com/u/24394918?s=400&v=4');
-            expect(body.users.name).to.equal('paul');
+            expect(body.user).to.contain.keys('username', 'avatar_url', 'name')
+            expect(body.user.username).to.equal('rogersop');
+            expect(body.user.avatar_url).to.equal('https://avatars2.githubusercontent.com/u/24394918?s=400&v=4');
+            expect(body.user.name).to.equal('paul');
           });
       });
       it('GETS users data with status 404 for a nonsense username', () => {

@@ -117,10 +117,10 @@ const sendCommentsByArticleId = ((req, res, next) => {
           return postCommentsByArticleId(req.params, req.body);
         };
       })
-      .then((comments) => {
+      .then((comment) => {
         //if (comments) next({msg: 'fgfdjvghj'})
         //else
-        res.status(201).send({ comments });
+        res.status(201).send({ comment });
       })
       .catch(next)
   };

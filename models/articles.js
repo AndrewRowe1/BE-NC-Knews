@@ -2,7 +2,7 @@ const connection = require('../db/connection');
 
 const getArticles = ({ author, topic, sort_by, order, limit }) => {
   return connection
-    .select('articles.author', 'title', 'articles.article_id', 'topic', 'articles.created_at',
+    .select('articles.author', 'title', 'articles.article_id', 'topic', 'articles.body', 'articles.created_at',
       'articles.votes')
     .count('comment_id as comment_count')
     .from('articles')
@@ -29,7 +29,7 @@ const getArticles = ({ author, topic, sort_by, order, limit }) => {
 }
 
 const getArticle = ({ article_id }) => {
-  return connection.select('articles.author', 'title', 'articles.article_id', 'topic', 'articles.created_at', 'articles.votes')
+  return connection.select('articles.author', 'title', 'articles.article_id', 'topic', 'articles.body', 'articles.created_at', 'articles.votes')
     .count('comment_id as comment_count')
     .from('articles')
     .leftJoin('comments', 'articles.article_id', 'comments.article_id')
