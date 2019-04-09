@@ -79,4 +79,11 @@ const postCommentsByArticleId = (articleId, request) => {
     .returning('*');
 };
 
-module.exports = { getArticles, getArticle, getArticleIds, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId };
+const postArticle = (request) => {
+  const insertObj = { author: request.author, body: request.body, topic: request.topic, title: request.title };
+  return connection('articles')
+    .insert(insertObj)
+    .returning('*');
+};
+
+module.exports = { getArticles, getArticle, getArticleIds, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId, postArticle };

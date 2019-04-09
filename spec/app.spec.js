@@ -101,12 +101,71 @@ describe('/', () => {
             expect(body.msg).to.equal('Method Not Allowed');
           });
       });
-      it('POST status:405 and returns method not allowed', () => {
+      it('POSTS article data with status 201', () => {
         return request
           .post('/api/articles')
-          .expect(405)
+          .expect(201)
+          .send({ author: 'icellusedkars', body: 'This is a great read, invest in your time and read this!', topic: 'mitch', title: 'Eight pug gifs that remind me of mitch' })
           .then(({ body }) => {
-            expect(body.msg).to.equal('Method Not Allowed');
+            expect(body.article.article_id).to.equal(13);
+            expect(body.article.author).to.equal('icellusedkars');
+            expect(body.article.topic).to.equal('mitch');
+            expect(body.article.title).to.equal('Eight pug gifs that remind me of mitch');
+            expect(body.article.body).to.equal('This is a great read, invest in your time and read this!');
+          });
+      });
+      it('POSTS article data with status 400, invalid author', () => {
+        return request
+          .post('/api/articles')
+          .expect(400)
+          .send({ author: 'andrewrowe', body: 'This is a great read, invest in your time and read this!', topic: 'mitch', title: 'Eight pug gifs that remind me of mitch' })
+          .then((body) => {
+            expect(body.text).to.equal('Author does not exist');
+          });
+      });
+      it('POSTS article data with status 400, invalid topic', () => {
+        return request
+          .post('/api/articles')
+          .expect(400)
+          .send({ author: 'icellusedkars', body: 'This is a great read, invest in your time and read this!', topic: 'rubbish', title: 'Eight pug gifs that remind me of mitch' })
+          .then((body) => {
+            expect(body.text).to.equal('Topic does not exist');
+          });
+      });
+      it('POSTS comments data with status 400 that does not include topic key', () => {
+        return request
+          .post('/api/articles')
+          .expect(400)
+          .send({ title: 'Eight pug gifs that remind me of mitch', author: 'icellusedkars', body: 'This is a great read, invest in your time and this!' })
+          .then((body) => {
+            expect(body.text).to.equal('Required keys not on request');
+          });
+      });
+      it('POSTS comments data with status 400 that does not include author key', () => {
+        return request
+          .post('/api/articles')
+          .expect(400)
+          .send({ title: 'Eight pug gifs that remind me of mitch', topic: 'mitch', body: 'This is a great read, invest in your time and this!' })
+          .then((body) => {
+            expect(body.text).to.equal('Required keys not on request');
+          });
+      });
+      it('POSTS comments data with status 400 that does not include title key', () => {
+        return request
+          .post('/api/articles')
+          .expect(400)
+          .send({ author: 'icellusedkars', topic: 'mitch', body: 'This is a great read, invest in your time and this!' })
+          .then((body) => {
+            expect(body.text).to.equal('Required keys not on request');
+          });
+      });
+      it('POSTS comments data with status 400 that does not include body key', () => {
+        return request
+          .post('/api/articles')
+          .expect(400)
+          .send({ author: 'icellusedkars', topic: 'mitch', title: 'Eight pug gifs that remind me of mitch' })
+          .then((body) => {
+            expect(body.text).to.equal('Required keys not on request');
           });
       });
       it('DELETE status:405 and returns method not allowed', () => {

@@ -1,4 +1,4 @@
-const { getArticles, getArticle, getArticleIds, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId } = require('../models/articles');
+const { getArticles, getArticle, getArticleIds, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId, postArticle } = require('../models/articles');
 const { getUsernames } = require('../models/users');
 const { getTopicsSlug } = require('../models/topics');
 
@@ -118,12 +118,36 @@ const sendCommentsByArticleId = ((req, res, next) => {
         };
       })
       .then((comment) => {
-        //if (comments) next({msg: 'fgfdjvghj'})
-        //else
         res.status(201).send({ comment });
       })
       .catch(next)
   };
 });
 
-module.exports = { fetchArticles, fetchArticle, amendArticle, removeArticle, fetchCommentsByArticleId, sendCommentsByArticleId };
+const sendArticle = ((req, res, next) => {
+  if (req.body.title === undefined || req.body.topic === undefined || req.body.author === undefined || req.body.body === undefined) {
+    next({ status: 400, msg: 'Required keys not on request' });
+  }
+  else {
+    Promise.all([getUsernames(req.body.author), getTopicsSlug(req.body.topic)])
+      .then(([users, topic]) => {
+        const authorExists = users.filter(element => element.username === req.body.author);
+        const topicExists = topic.filter(element => element.slug === req.body.topic);
+        if (authorExists.length === 0) {
+          return Promise.reject({ status: 400, msg: 'Author does not exist' });
+        }
+        else if (topicExists.length === 0) {
+          return Promise.reject({ status: 400, msg: 'Topic does not exist' });
+        }
+        else {
+          return postArticle(req.body);
+        };
+      })
+      .then(([article]) => {
+        res.status(201).send({ article });
+      })
+      .catch(next)
+  };
+});
+
+module.exports = { fetchArticles, fetchArticle, amendArticle, removeArticle, fetchCommentsByArticleId, sendCommentsByArticleId, sendArticle };
