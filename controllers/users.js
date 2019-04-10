@@ -43,5 +43,4 @@ const sendUser = ((req, res, next) => {
   };
 });
 
-
 module.exports = { fetchUsers, sendUser, fetchUserByUserId };

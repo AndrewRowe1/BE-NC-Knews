@@ -12,8 +12,8 @@ const getTopicsSlug = () => {
     .from('topics');
 }
 
-const postTopic = (request) => {
-  const insertObj = { slug: request.slug, description: request.description };
+const postTopic = ({ slug, description }) => {
+  const insertObj = { slug, description };
   return connection('topics')
     .insert(insertObj)
     .returning('*');

@@ -42,14 +42,12 @@ const getArticleIds = () => {
     .from('articles');
 }
 
-const patchArticle = (articlePatch, { article_id }) => {
-  const voteIncrement = articlePatch.inc_votes || 0;
-  return connection('articles').where('article_id', '=', article_id).increment('votes', voteIncrement).returning('*');
+const patchArticle = ({ inc_votes }, { article_id }) => {
+  return connection('articles').where('article_id', '=', article_id).increment('votes', inc_votes || 0).returning('*');
 };
 
-const deleteArticle = (articleId) => {
-  const articleIdInt = articleId.article_id;
-  return connection('articles').del().where('article_id', '=', articleIdInt).returning('*');
+const deleteArticle = ({ article_id }) => {
+  return connection('articles').del().where('article_id', '=', article_id).returning('*');
 };
 
 const getCommentsByArticleId = ({ article_id }, { sort_by, order, limit }) => {
@@ -70,17 +68,16 @@ const getCommentsByArticleId = ({ article_id }, { sort_by, order, limit }) => {
     .limit(limit || 10);
 };
 
-const postCommentsByArticleId = (articleId, request) => {
-  const articleid = parseInt(articleId.article_id);
-  const insertObj = { author: request.username, body: request.body, article_id: articleid };
+const postCommentsByArticleId = ({ article_id }, { username, body }) => {
+  const insertObj = { author: username, body, article_id: article_id };
   return connection('comments')
     .insert(insertObj)
-    .where('article_id', '=', articleid)
+    .where('article_id', '=', article_id)
     .returning('*');
 };
 
-const postArticle = (request) => {
-  const insertObj = { author: request.author, body: request.body, topic: request.topic, title: request.title };
+const postArticle = ({ author, body, topic, title }) => {
+  const insertObj = { author, body, topic, title };
   return connection('articles')
     .insert(insertObj)
     .returning('*');

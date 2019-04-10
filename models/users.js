@@ -11,14 +11,14 @@ const getUserByUserId = ({ user_id }) => {
     .where('username', '=', user_id);
 };
 
-const getUsernames = (user) => {
+const getUsernames = () => {
   return connection
     .select('username')
     .from('users');
 }
 
-const postUser = (request) => {
-  const insertObj = { username: request.username, name: request.name, avatar_url: request.avatar_url };
+const postUser = ({ username, name, avatar_url }) => {
+  const insertObj = { username, name, avatar_url };
   return connection('users')
     .insert(insertObj)
     .returning('*');

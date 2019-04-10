@@ -1,14 +1,11 @@
 const connection = require('../db/connection');
 
-const patchComment = (commentPatch, commentId) => {
-  const voteIncrement = commentPatch.inc_votes || 0;
-  const commentIdInt = commentId.comment_id;
-  return connection('comments').where('comment_id', '=', commentIdInt).increment('votes', voteIncrement).returning('*');
+const patchComment = ({ inc_votes }, { comment_id }) => {
+  return connection('comments').where('comment_id', '=', comment_id).increment('votes', inc_votes || 0).returning('*');
 };
 
-const deleteComment = (commentId) => {
-  const commentIdInt = commentId.comment_id;
-  return connection('comments').del().where('comment_id', '=', commentIdInt).returning('*');
+const deleteComment = ({ comment_id }) => {
+  return connection('comments').del().where('comment_id', '=', comment_id).returning('*');
 };
 
 module.exports = { patchComment, deleteComment };
