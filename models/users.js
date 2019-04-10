@@ -1,10 +1,14 @@
 const connection = require('../db/connection');
 
-const getUserByUserId = (username) => {
-  const user_name = username.user_id
+const getUsers = () => {
+  return connection('users')
+    .select('*');
+};
+
+const getUserByUserId = ({ user_id }) => {
   return connection('users')
     .select('*')
-    .where('username', '=', user_name);
+    .where('username', '=', user_id);
 };
 
 const getUsernames = (user) => {
@@ -13,4 +17,11 @@ const getUsernames = (user) => {
     .from('users');
 }
 
-module.exports = { getUserByUserId, getUsernames };
+const postUser = (request) => {
+  const insertObj = { username: request.username, name: request.name, avatar_url: request.avatar_url };
+  return connection('users')
+    .insert(insertObj)
+    .returning('*');
+};
+
+module.exports = { getUsers, getUserByUserId, getUsernames, postUser };

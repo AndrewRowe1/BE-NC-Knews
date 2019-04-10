@@ -46,12 +46,41 @@ describe('/', () => {
             expect(body.msg).to.equal('Method Not Allowed');
           });
       });
-      it('POST status:405 and returns method not allowed', () => {
+      it('POSTS topics data with status 201', () => {
         return request
           .post('/api/topics')
-          .expect(405)
+          .expect(201)
+          .send({ slug: 'dogs', description: 'Not cats!' })
           .then(({ body }) => {
-            expect(body.msg).to.equal('Method Not Allowed');
+            expect(body.topic.slug).to.equal('dogs');
+            expect(body.topic.description).to.equal('Not cats!');
+          });
+      });
+      it('POSTS topics data with status 400, missing slug key', () => {
+        return request
+          .post('/api/topics')
+          .expect(400)
+          .send({ description: 'Not cats!' })
+          .then((body) => {
+            expect(body.text).to.equal('Required keys not on request');
+          });
+      });
+      it('POSTS topics data with status 400, missing description key', () => {
+        return request
+          .post('/api/topics')
+          .expect(400)
+          .send({ slug: 'Dogs' })
+          .then((body) => {
+            expect(body.text).to.equal('Required keys not on request');
+          });
+      });
+      it('POSTS topics data with status 422', () => {
+        return request
+          .post('/api/topics')
+          .expect(422)
+          .send({ slug: 'cats', description: 'Not cats again!' })
+          .then((body) => {
+            expect(body.text).to.equal('Unprocessable entry, topic(slug) already exists');
           });
       });
       it('DELETE status:405 and returns method not allowed', () => {
@@ -744,37 +773,84 @@ describe('/', () => {
           });
       });
     });
-    describe('/users/:username', () => {
-      it('GETS users data with status 200 for a given username', () => {
+    describe('/users', () => {
+      it('GETS users data with status 200', () => {
         return request
-          .get('/api/users/rogersop')
+          .get('/api/users')
           .expect(200)
           .then(({ body }) => {
-            expect(body.user).to.contain.keys('username', 'avatar_url', 'name')
-            expect(body.user.username).to.equal('rogersop');
-            expect(body.user.avatar_url).to.equal('https://avatars2.githubusercontent.com/u/24394918?s=400&v=4');
-            expect(body.user.name).to.equal('paul');
+            expect(body.users[0].username).to.equal('butter_bridge');
+            expect(body.users[0].name).to.equal('jonny');
+            expect(body.users[0].avatar_url).to.equal('https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg');
           });
       });
-      it('GETS users data with status 404 for a nonsense username', () => {
+      it('POSTS users data with status 201', () => {
         return request
-          .get('/api/users/nonsense')
-          .expect(404)
-          .then((body) => {
-            expect(body.text).to.equal('Page not found');
-          });
-      });
-      it('POST status:405 and returns method not allowed', () => {
-        return request
-          .post('/api/users/rogersop')
-          .expect(405)
+          .post('/api/users')
+          .expect(201)
+          .send({
+            username: 'andrew_rowe',
+            name: 'andrew',
+            avatar_url: 'https://avatars3.githubusercontent.com/u/123456?s=300&v=3'
+          })
           .then(({ body }) => {
-            expect(body.msg).to.equal('Method Not Allowed');
+            expect(body.user.username).to.equal('andrew_rowe');
+            expect(body.user.name).to.equal('andrew');
+            expect(body.user.avatar_url).to.equal('https://avatars3.githubusercontent.com/u/123456?s=300&v=3');
+          });
+      });
+      it('POSTS users data with status 400 when missing username', () => {
+        return request
+          .post('/api/users')
+          .expect(400)
+          .send({
+            name: 'andrew',
+            avatar_url: 'https://avatars3.githubusercontent.com/u/123456?s=300&v=3'
+          })
+          .then((body) => {
+            expect(body.text).to.equal('Required keys not on request');
+          });
+      });
+      it('POSTS users data with status 400 when missing name', () => {
+        return request
+          .post('/api/users')
+          .expect(400)
+          .send({
+            username: 'andrew_rowe',
+            avatar_url: 'https://avatars3.githubusercontent.com/u/123456?s=300&v=3'
+          })
+          .then((body) => {
+            expect(body.text).to.equal('Required keys not on request');
+          });
+      });
+      it('POSTS users data with status 400 when missing avatar_url', () => {
+        return request
+          .post('/api/users')
+          .expect(400)
+          .send({
+            username: 'andrew_rowe',
+            name: 'andrew'
+          })
+          .then((body) => {
+            expect(body.text).to.equal('Required keys not on request');
+          });
+      });
+      it('POSTS users data with status 422 when posting an existing username', () => {
+        return request
+          .post('/api/users')
+          .expect(422)
+          .send({
+            username: 'rogersop',
+            name: 'paul',
+            avatar_url: 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4'
+          })
+          .then((body) => {
+            expect(body.text).to.equal('Unprocessable entry, username already exists');
           });
       });
       it('PATCH status:405 and returns method not allowed', () => {
         return request
-          .patch('/api/users/rogersop')
+          .patch('/api/users')
           .expect(405)
           .then(({ body }) => {
             expect(body.msg).to.equal('Method Not Allowed');
@@ -782,12 +858,57 @@ describe('/', () => {
       });
       it('DELETE status:405 and returns method not allowed', () => {
         return request
-          .delete('/api/users/rogersop')
+          .delete('/api/users')
           .expect(405)
           .then(({ body }) => {
             expect(body.msg).to.equal('Method Not Allowed');
           });
       });
-    });
+      describe('/:username', () => {
+        it('GETS users data with status 200 for a given username', () => {
+          return request
+            .get('/api/users/rogersop')
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.user).to.contain.keys('username', 'avatar_url', 'name')
+              expect(body.user.username).to.equal('rogersop');
+              expect(body.user.avatar_url).to.equal('https://avatars2.githubusercontent.com/u/24394918?s=400&v=4');
+              expect(body.user.name).to.equal('paul');
+            });
+        });
+        it('GETS users data with status 404 for a nonsense username', () => {
+          return request
+            .get('/api/users/nonsense')
+            .expect(404)
+            .then((body) => {
+              expect(body.text).to.equal('Page not found');
+            });
+        });
+        it('POST status:405 and returns method not allowed', () => {
+          return request
+            .post('/api/users/rogersop')
+            .expect(405)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Method Not Allowed');
+            });
+        });
+        it('PATCH status:405 and returns method not allowed', () => {
+          return request
+            .patch('/api/users/rogersop')
+            .expect(405)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Method Not Allowed');
+            });
+        });
+        it('DELETE status:405 and returns method not allowed', () => {
+          return request
+            .delete('/api/users/rogersop')
+            .expect(405)
+            .then(({ body }) => {
+              expect(body.msg).to.equal('Method Not Allowed');
+            });
+        });
+      });
+    })
   });
 });

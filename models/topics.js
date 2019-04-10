@@ -12,4 +12,11 @@ const getTopicsSlug = () => {
     .from('topics');
 }
 
-module.exports = { getTopics, getTopicsSlug };
+const postTopic = (request) => {
+  const insertObj = { slug: request.slug, description: request.description };
+  return connection('topics')
+    .insert(insertObj)
+    .returning('*');
+};
+
+module.exports = { getTopics, getTopicsSlug, postTopic };

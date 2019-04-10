@@ -1,6 +1,12 @@
 const userRouter = require('express').Router();
-const fetchUserByUserId = require('../controllers/users')
+const { sendUser, fetchUsers, fetchUserByUserId } = require('../controllers/users')
 const { methodNotAllowed } = require('../errors');
+
+userRouter
+  .route('/')
+  .get(fetchUsers)
+  .post(sendUser)
+  .all(methodNotAllowed);
 
 userRouter
   .route('/:user_id')
