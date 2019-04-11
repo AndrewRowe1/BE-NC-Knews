@@ -1,4 +1,4 @@
-const { getArticles, getArticle, getArticleIds, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId, postArticle } = require('../models/articles');
+const { getArticles, getArticle, getArticleIds, patchArticle, deleteArticle, getCommentsByArticleId, postCommentByArticleId, postArticle } = require('../models/articles');
 const { getUsernames } = require('../models/users');
 const { getTopicsSlug } = require('../models/topics');
 
@@ -102,7 +102,7 @@ const fetchCommentsByArticleId = ((req, res, next) => {
     .catch(next);
 });
 
-const sendCommentsByArticleId = ((req, res, next) => {
+const sendCommentByArticleId = ((req, res, next) => {
   if (req.body.username === undefined) {
     next({ status: 400, msg: 'No username key on request' });
   }
@@ -114,10 +114,10 @@ const sendCommentsByArticleId = ((req, res, next) => {
           return Promise.reject({ status: 400, msg: 'Author does not exist' });
         }
         else {
-          return postCommentsByArticleId(req.params, req.body);
+          return postCommentByArticleId(req.params, req.body);
         };
       })
-      .then((comment) => {
+      .then(([comment]) => {
         res.status(201).send({ comment });
       })
       .catch(next)
@@ -150,4 +150,4 @@ const sendArticle = ((req, res, next) => {
   };
 });
 
-module.exports = { fetchArticles, fetchArticle, amendArticle, removeArticle, fetchCommentsByArticleId, sendCommentsByArticleId, sendArticle };
+module.exports = { fetchArticles, fetchArticle, amendArticle, removeArticle, fetchCommentsByArticleId, sendCommentByArticleId, sendArticle };

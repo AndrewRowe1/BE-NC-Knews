@@ -583,11 +583,11 @@ describe('/', () => {
               .expect(201)
               .send({ username: 'icellusedkars', body: 'This is a great read, invest in your time and read this!' })
               .then(({ body }) => {
-                expect(body.comment[0].comment_id).to.equal(19);
-                expect(body.comment[0].author).to.equal('icellusedkars');
-                expect(body.comment[0].article_id).to.equal(5);
-                expect(body.comment[0].votes).to.equal(0);
-                expect(body.comment[0].body).to.equal('This is a great read, invest in your time and read this!');
+                expect(body.comment.comment_id).to.equal(19);
+                expect(body.comment.author).to.equal('icellusedkars');
+                expect(body.comment.article_id).to.equal(5);
+                expect(body.comment.votes).to.equal(0);
+                expect(body.comment.body).to.equal('This is a great read, invest in your time and read this!');
               });
           });
           it('POSTS comments data with status 400 for a given article_id of 1, does not include body key', () => {

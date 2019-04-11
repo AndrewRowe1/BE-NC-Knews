@@ -1,5 +1,5 @@
 const articleRouter = require('express').Router();
-const { fetchArticles, fetchArticle, amendArticle, removeArticle, fetchCommentsByArticleId, sendCommentsByArticleId, sendArticle } = require('../controllers/articles')
+const { fetchArticles, fetchArticle, amendArticle, removeArticle, fetchCommentsByArticleId, sendCommentByArticleId, sendArticle } = require('../controllers/articles')
 const { methodNotAllowed } = require('../errors');
 
 articleRouter
@@ -18,7 +18,7 @@ articleRouter
 articleRouter
   .route('/:article_id/comments')
   .get(fetchCommentsByArticleId)
-  .post(sendCommentsByArticleId)
+  .post(sendCommentByArticleId)
   .all(methodNotAllowed);
 
 module.exports = articleRouter;

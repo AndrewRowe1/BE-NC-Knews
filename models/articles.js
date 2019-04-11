@@ -68,11 +68,11 @@ const getCommentsByArticleId = ({ article_id }, { sort_by, order, limit }) => {
     .limit(limit || 10);
 };
 
-const postCommentsByArticleId = ({ article_id }, { username, body }) => {
-  const insertObj = { author: username, body, article_id: article_id };
+const postCommentByArticleId = ({ article_id }, { username, body }) => {
+  const insertObj = { author: username, body, article_id };
   return connection('comments')
     .insert(insertObj)
-    .where('article_id', '=', article_id)
+    //.where('article_id', '=', article_id)
     .returning('*');
 };
 
@@ -83,4 +83,4 @@ const postArticle = ({ author, body, topic, title }) => {
     .returning('*');
 };
 
-module.exports = { getArticles, getArticle, getArticleIds, patchArticle, deleteArticle, getCommentsByArticleId, postCommentsByArticleId, postArticle };
+module.exports = { getArticles, getArticle, getArticleIds, patchArticle, deleteArticle, getCommentsByArticleId, postCommentByArticleId, postArticle };
