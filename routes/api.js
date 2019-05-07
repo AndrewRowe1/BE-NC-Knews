@@ -14,6 +14,8 @@ apiRouter.use('/comments', commentRouter);
 apiRouter.use('/topics', topicRouter);
 apiRouter.use('/users', userRouter);
 
+console.log('gets here')
+
 apiRouter
   .route('/')
   .get(fetchEndPoints)
