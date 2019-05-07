@@ -72,7 +72,6 @@ const postCommentByArticleId = ({ article_id }, { username, body }) => {
   const insertObj = { author: username, body, article_id };
   return connection('comments')
     .insert(insertObj)
-    //.where('article_id', '=', article_id)
     .returning('*');
 };
 
