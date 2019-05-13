@@ -5,6 +5,8 @@ const { routeNotFound, handleErrorStatus, handle400, handle404, handle500 } = re
 
 const app = express();
 
+app.use(cors());
+
 app.use(express.json());
 
 app.use('/api', apiRouter);
