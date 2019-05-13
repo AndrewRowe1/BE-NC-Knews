@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const apiRouter = require('./routes/api');
 const { routeNotFound, handleErrorStatus, handle400, handle404, handle500 } = require('./errors');
 
