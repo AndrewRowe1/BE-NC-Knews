@@ -105,6 +105,7 @@ describe('/', () => {
             expect(body.articles[0].topic).to.equal('mitch');
             expect(body.articles[0].votes).to.equal(100);
             expect(body.articles[0].comment_count).to.equal('13');
+            expect(body.articles[0].total_count).to.equal('13');
           });
       });
       it('GET status:200 and returns articles data limited to 8 records', () => {

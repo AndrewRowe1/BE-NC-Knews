@@ -5,6 +5,7 @@ const getArticles = ({ author, topic, sort_by, order, limit, p }) => {
     .select('articles.author', 'title', 'articles.article_id', 'topic', 'articles.body', 'articles.created_at',
       'articles.votes')
     .count('comment_id as comment_count')
+    .count('articles.article_id as total_count')
     .from('articles')
     .leftJoin('comments', 'articles.article_id', 'comments.article_id')
     .modify((query) => {
