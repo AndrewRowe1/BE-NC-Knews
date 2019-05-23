@@ -122,6 +122,21 @@ describe('/', () => {
             expect(body.articles[0].comment_count).to.equal('13');
           });
       });
+      it('GET status:200 and returns articles data on 2nd page', () => {
+        return request
+          .get('/api/articles?p=2')
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.have.lengthOf(2);
+            expect(body.articles[0]).to.contain.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count');
+            expect(body.articles[0].author).to.equal('icellusedkars');
+            expect(body.articles[0].title).to.equal(`Am I a cat?`);
+            expect(body.articles[0].article_id).to.equal(11);
+            expect(body.articles[0].topic).to.equal('mitch');
+            expect(body.articles[0].votes).to.equal(0);
+            expect(body.articles[0].comment_count).to.equal('0');
+          });
+      });
       it('PATCH status:405 and returns method not allowed', () => {
         return request
           .patch('/api/articles')
@@ -211,6 +226,7 @@ describe('/', () => {
             .get('/api/articles?author=butter_bridge')
             .expect(200)
             .then(({ body }) => {
+              expect(body.articles.length).to.equal(3);
               expect(body.articles[0].title).to.equal('Living in the shadow of a great man');
               expect(body.articles[0].article_id).to.equal(1);
               expect(body.articles[0].votes).to.equal(100);
@@ -514,6 +530,19 @@ describe('/', () => {
                 expect(body.comments[0].comment_id).to.equal(14);
                 expect(body.comments[0].votes).to.equal(16);
                 expect(body.comments[0].body).to.equal('What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.');
+              });
+          })
+          it('GETS comments data with status 200 for a given article_id of 5', () => {
+            return request
+              .get('/api/articles/1/comments?p=2')
+              .expect(200)
+              .then(({ body }) => {
+                expect(body.comments).to.have.lengthOf(3);
+                expect(body.comments[0].author).to.equal('icellusedkars');
+                expect(body.comments[0].article_id).to.equal(1);
+                expect(body.comments[0].comment_id).to.equal(12);
+                expect(body.comments[0].votes).to.equal(0);
+                expect(body.comments[0].body).to.equal('Massive intercranial brain haemorrhage');
               });
           })
           it('GETS comments data with status 200 for a given article_id of 2 which has no comments', () => {
