@@ -5,7 +5,6 @@ const getArticles = ({ author, topic, sort_by, order, limit, p }) => {
     .select('articles.author', 'title', 'articles.article_id', 'topic', 'articles.body', 'articles.created_at',
       'articles.votes')
     .count('comment_id as comment_count')
-    .count('articles.article_id as total_count')
     .from('articles')
     .leftJoin('comments', 'articles.article_id', 'comments.article_id')
     .modify((query) => {
@@ -28,6 +27,11 @@ const getArticles = ({ author, topic, sort_by, order, limit, p }) => {
     .groupBy('articles.article_id')
     .limit(limit || 10)
     .offset((p - 1) * 10 || 0);
+}
+
+const getArticlesCount = () => {
+  return connection('count').count('article_id as total_count')
+    .from('articles')
 }
 
 const getArticle = ({ article_id }) => {
@@ -85,4 +89,4 @@ const postArticle = ({ author, body, topic, title }) => {
     .returning('*');
 };
 
-module.exports = { getArticles, getArticle, getArticleIds, patchArticle, deleteArticle, getCommentsByArticleId, postCommentByArticleId, postArticle };
+module.exports = { getArticles, getArticlesCount, getArticle, getArticleIds, patchArticle, deleteArticle, getCommentsByArticleId, postCommentByArticleId, postArticle };

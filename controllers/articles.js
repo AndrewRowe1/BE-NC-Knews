@@ -1,4 +1,4 @@
-const { getArticles, getArticle, getArticleIds, patchArticle, deleteArticle, getCommentsByArticleId, postCommentByArticleId, postArticle } = require('../models/articles');
+const { getArticles, getArticlesCount, getArticle, getArticleIds, patchArticle, deleteArticle, getCommentsByArticleId, postCommentByArticleId, postArticle } = require('../models/articles');
 const { getUsernames } = require('../models/users');
 const { getTopicsSlug } = require('../models/topics');
 
@@ -37,10 +37,18 @@ const fetchArticles = ((req, res, next) => {
   getArticles(req.query)
     .then((articles) => {
       if (articles === undefined) {
-        res.status(200).send({ articles: [] });
+        res.status(200).send({ articles: [], totalCount: 0 });
       }
       else {
-        res.status(200).send({ articles });
+        const articleContent = articles;
+        getArticlesCount()
+          .then((articlesCount) => {
+            const article = articleContent.map(element => {
+              element.total_count = articlesCount[0].total_count;
+            })
+            res.status(200).send({ articles });
+          })
+          .catch(next)
       }
     })
     .catch(next)
