@@ -270,9 +270,9 @@ describe('/', () => {
               expect(body.text).to.equal('Topic not found');
             });
         });
-        it('GET status:200 and returns no articles data queried by topic that exists with no articles - note created brexitchaos as a topic', () => {
+        it('GET status:200 and returns no articles data queried by topic that exists with no articles - note created lions as a topic', () => {
           return request
-            .get('/api/articles?topic=brexitchaos')
+            .get('/api/articles?topic=lions')
             .expect(200)
             .then(({ body }) => {
               expect(body.articles).to.eql([]);
