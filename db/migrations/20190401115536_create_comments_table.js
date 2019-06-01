@@ -7,7 +7,7 @@ exports.up = function (knex, Promise) {
     commentsTable.integer('article_id').unsigned().notNullable();
     commentsTable.foreign('article_id').references('article_id').inTable('articles').onDelete('cascade');
     commentsTable.integer('votes').defaultTo(0);
-    commentsTable.date('created_at', 10).notNullable().defaultTo(knex.fn.now(10));
+    commentsTable.date('created_at', 20).notNullable().defaultTo(knex.fn.now(20));
     commentsTable.string('body', 5000).notNullable();
   });
 };
