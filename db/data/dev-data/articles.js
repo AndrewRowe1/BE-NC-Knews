@@ -315,7 +315,7 @@ module.exports = [
     body:
       'The first day I put my family on a Paleolithic diet, I made my kids fried eggs and sausage for breakfast. If they were still hungry, I told them, they could help themselves to more sausage, but they were not allowed to grab a slice of bread, or toast an English muffin, or pour themselves a bowl of cereal. This represented a reversal of the usual strictures, and they were happy to oblige. It was like some weird, unexpected holiday—Passover in July.',
     created_at: 1481662720516,
-    votes: 11,
+    votes: 10,
   },
   {
     title: 'The vegan carnivore?',
