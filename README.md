@@ -6,6 +6,20 @@ A restful application programming interface (API) has been built, with the follo
 
 ## Getting Started
 
+### Setting up the project
+
+The project generator Yo [https://www.npmjs.com/package/yo] has been used to create some boilerplate code for the application, using the specific project generator Knexpress, with the following terminal command:
+
+npm i -g yo generator-knexpress
+
+Once installed, the generator was ran with yo to create the project:
+
+yo knexpress
+
+This script created a new folder for the project, and initialised it as a git repository.
+
+Finally, the development-data and test-data was copied and pasted into the db/data folder.
+
 ### Dependencies
 
 Express: [https://expressjs.com/]
