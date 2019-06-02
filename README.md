@@ -36,7 +36,7 @@ npm install -d mocha chai supertest nodemon
 
 ## Available Scripts
 
-Create development and test databases locally:
+### Create development and test databases locally:
 
 npm run setup-dbs
 
@@ -82,9 +82,13 @@ Full Test Driven Development (TDD) was used to test individual utitlity function
 
 Two sets of tests are made:
 
+### Available Endpoints
+
 Firstly requests are made to the database to test the available end points, to check that data is received from the database as expected.  Requests include GET, POST, PATCH and DELETE methods, specified on the relevant endpoints where the appropriate request methods are available to be used.
 
 An example test is a GET request on the topics endpoint (/api/topics) in lines 30 to 40 of the file, which checks that the server responds with a status 200 code, that the first object in the array has keys of 'description' and 'slug', the value of the 'slug' key is equal to 'mitch', and the value of the 'description' key is 'The man, the Mitch, the legend'.
+
+### Error Handling
 
 Secondly, error handling tests have been created to test the error handling middleware functionality.  This checks that the database sends back sensible responses based on the individual error handling test.
 
